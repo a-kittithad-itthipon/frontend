@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     if (!token) {
       return NextResponse.json({ error: "No Token Found" }, { status: 401 });
     }
-    const flaskRes = await fetch("http://localhost:5000/api/maxcontainer", {
+    const flaskRes = await fetch(`${process.env.NEXTAPI_URL}/maxcontainer` , {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

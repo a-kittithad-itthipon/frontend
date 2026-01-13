@@ -10,7 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: "No Token Found" }, { status: 401 });
     }
 
-    const flaskRes = await fetch("http://localhost:5000/api/dashboard", {
+    const flaskRes = await fetch(`${process.env.NEXTAPI_URL}/dashboard`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.value}`,

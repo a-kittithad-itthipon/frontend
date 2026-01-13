@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const { username, password } = await req.json();
-    const flaskRes = await fetch("http://localhost:5000/api/login", {
+    const flaskRes = await fetch(`${process.env.NEXTAPI_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),

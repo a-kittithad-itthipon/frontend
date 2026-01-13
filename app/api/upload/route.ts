@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No Token Found" }, { status: 401 });
     }
 
-    const flaskRes = await fetch("http://localhost:5000/api/upload", {
+    const flaskRes = await fetch(`${process.env.NEXTAPI_URL}/upload`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${token.value}`,

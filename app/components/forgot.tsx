@@ -39,7 +39,7 @@ export default function Forgot() {
     try {
       const res = await fetch("/api/forgot", {
         method: "POST",
-        headers: { "Contant-Type": "appication/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username }),
       });
       const data = await res.json();

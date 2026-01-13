@@ -74,7 +74,7 @@ const Index = () => {
       </main>
       <main className="h-[100vh] w-full flex justify-start items-center flex-col">
         <div className="w-full h-[15%] flex justify-center items-center text-3xl font-[700]">
-          <h1>Deploy Categlorise</h1>
+          <h1>Deploy Categories</h1>
         </div>
         <div className="grid grid-cols-3 gap-10 w-[55%] h-[75%] justify-center items-center">
           <a

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     const flaskRes = await fetch(
-      "http://localhost:5000/api/forgot_repassword",
+      `${process.env.NEXTAPI_URL}/forgot_repassword`,  
       {
         method: "POST",
         headers: {

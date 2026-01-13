@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Session Time Out" }, { status: 401 });
     }
 
-    const flaskRes = await fetch("http://localhost:5000/api/req_db", {
+    const flaskRes = await fetch(`${process.env.NEXTAPI_URL}/req_db`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

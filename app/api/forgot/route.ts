@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 export async function POST(req: Request) {
   const { username } = await req.json();
   try {
-    const flaskRes = await fetch("http://localhost:5000/api/forgot", {
+    const flaskRes = await fetch(`${process.env.NEXTAPI_URL}/forgot`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username }),
