@@ -108,16 +108,13 @@ export default function Upload() {
   return (
     <main className="flex flex-12 h-full justify-center items-center">
       <div className="w-[90%] h-[90%] border rounded-3xl flex flex-col justify-between items-center">
-        <div className="h-[10%] w-full flex justify-center items-center text-2xl font-[600]">
-          Add Local DNS
-        </div>
-        <div className="h-[90%] w-full flex">
+        <div className="h-[100%] w-full flex">
           <div className="flex flex-1 justify-between items-center flex-col pt-5">
             <form
               action="#"
               method="post"
               id="file_zip_form"
-              className="h-[30%] w-[80%] flex flex-col justify-start items-start gap-4"
+              className="h-[30%] w-[80%] flex flex-col justify-center items-center gap-4"
             >
               <div className="w-full flex gap-3">
                 <div className="w-[65%] flex flex-col">
@@ -159,14 +156,14 @@ export default function Upload() {
                   />
                 </div>
                 <div className="w-[35%] flex flex-col">
-                  <p>Root Domain (.local)</p>
+                  <p>Root Domain (.addp.site)</p>
                   <input
                     type="text"
                     className="py-5 px-5 text-md border h-[55px] w-full rounded-2xl outline-none"
-                    placeholder=".local"
+                    placeholder=".addp.site"
                     name="root_domain"
                     readOnly
-                    value={".local"}
+                    value={".addp.site"}
                   />
                 </div>
               </div>
@@ -184,7 +181,7 @@ export default function Upload() {
                 className="w-[30%] h-[60px] bg-sky-500 text-white text-md rounded-full flex justify-center items-center gap-2 hover:bg-sky-700 transition cursor-pointer"
               >
                 <i className='bx bx-link-external text-xl'></i>
-                Add Local Dns
+                Add Domain
               </button>
             </div>
           </div>

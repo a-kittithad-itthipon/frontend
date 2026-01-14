@@ -230,11 +230,11 @@ export default function Upload() {
               />
               <div className="w-full flex gap-3">
                 <div className="w-[65%] flex flex-col">
-                  <p>Container Name</p>
+                  <p>Service Name</p>
                   <input
                     type="text"
                     className="py-5 px-5 text-md border h-[55px] w-full rounded-2xl outline-none"
-                    placeholder="Enter container name (App Container)"
+                    placeholder="Enter service name (App Container)"
                     name="container_name"
                     onChange={check_name}
                     value={container_name}

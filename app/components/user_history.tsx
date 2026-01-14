@@ -1,38 +1,39 @@
 "use client";
+import { div } from "framer-motion/client";
 import { CircleX, Pencil, ScrollText, User, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export default function History() {
-  const users = [
+  const logs_data = [
     {
       username: "admin",
-      container: "dev",
+      container_name : "dev",
       action: "DEPLOY",
-      datetime: Date.now(),
+      created_at: Date.now(),
       status: "Success",
       details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, dicta consequuntur quam, perspiciatis vitae pariatur hic, quibusdam ut non dignissimos labore enim maxime laudantium dolores? Excepturi mollitia totam necessitatibus laudantium.",
     },
     {
       username: "admin",
-      container: "dev",
+      container_name: "dev",
       action: "DEPLOY",
-      datetime: Date.now(),
+      created_at: Date.now(),
       status: "Success",
       details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, dicta consequuntur quam, perspiciatis vitae pariatur hic, quibusdam ut non dignissimos labore enim maxime laudantium dolores? Excepturi mollitia totam necessitatibus laudantium.",
     },
     {
       username: "admin",
-      container: "dev",
+      container_name: "dev",
       action: "DEPLOY",
-      datetime: Date.now(),
+      created_at: Date.now(),
       status: "Success",
       details:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, dicta consequuntur quam, perspiciatis vitae pariatur hic, quibusdam ut non dignissimos labore enim maxime laudantium dolores? Excepturi mollitia totam necessitatibus laudantium.",
     },
   ];
-  const [usersTable, setUserstable] = useState<any[]>([]);
+  const [logsTable, setLogstable] = useState<any[]>([]);
   const [details_msg, setDetails_msg] = useState("");
   const [isopen, setisopen] = useState(false);
   const [data, setdata] = useState<any>(null);
@@ -49,7 +50,21 @@ export default function History() {
   }
 
   useEffect(() => {
-    setUserstable(users);
+    const fetchLogs = async () => {
+      try {
+        const res = await fetch("/api/logs");
+        const data = await res.json();
+        if (!res.ok) {
+          setLogstable(logs_data);
+          return;
+        }
+        setLogstable(data);
+      } catch (error) {
+        console.log(error);
+        setLogstable(logs_data);
+      }
+    };
+    fetchLogs();
   }, []);
 
   return (
@@ -69,16 +84,16 @@ export default function History() {
               </tr>
             </thead>
             <tbody className="text-center">
-              {usersTable.map((user, index) => (
+              {logsTable.map((user, index) => (
                 <tr
                   key={index}
                   className="h-[60px] border-b hover:bg-gray-100 transition-all"
                 >
                   <td>{index + 1}</td>
                   <td className="max-w-[80px] truncate">{user.username}</td>
-                  <td className="max-w-[80px] truncate">{user.container}</td>
+                  <td className="max-w-[80px] truncate">{user.container_name}</td>
                   <td className="max-w-[80px] truncate">{user.action}</td>
-                  <td className="max-w-[80px] truncate">{user.datetime}</td>
+                  <td className="max-w-[80px] truncate">{user.created_at}</td>
                   <td className="max-w-[80px] truncate">{user.status}</td>
                   <td className="max-w-[80px] truncate">
                     <div className="w-full h-full flex justify-center">
@@ -113,7 +128,7 @@ export default function History() {
                 <CircleX size={30} />
               </button>
             </div>
-            <div className="w-full h-[80%] p-5 overflow-y-auto text-justify">
+            <div className="w-full h-[80%] p-5 overflow-y-auto text-[10px]">
               {data.details}
             </div>
           </div>

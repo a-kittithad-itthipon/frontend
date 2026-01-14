@@ -1,19 +1,20 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
 export default function SystemList() {
   const [search, setSearch] = useState("");
+  const [system, setSystem] = useState<any[]>([]);
   const search_system = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     setSearch(value);
   };
-  const systems = [];
+  const systems_data: SetStateAction<any[]> = [];
   for (let i = 0; i < 30; i++) {
-    systems.push({
+    systems_data.push({
       id: i + 1,
-      name: "system" + (i + 1),
+      container_name: "system" + (i + 1),
       domain: "sys" + (i + 1) + ".local",
       type: "Web",
       owner: "Administrator",
@@ -21,15 +22,34 @@ export default function SystemList() {
     });
   }
   const filteredSystems = [];
-  for (let i = 0; i < systems.length; i++) {
-    const sys = systems[i];
-    const name = sys.name.toLowerCase();
+  for (let i = 0; i < system.length; i++) {
+    const sys = system[i];
+    const name = sys.container_name.toLowerCase();
     const domain = sys.domain.toLowerCase();
     const keyword = search.toLowerCase();
     if (name.includes(keyword) || domain.includes(keyword)) {
       filteredSystems.push(sys);
     }
   }
+  useEffect(() => {
+    const fetchSystemdata = async () => {
+      try {
+        const res = await fetch("api/active-site");
+        const data = await res.json();
+
+        if (!res.ok) {
+          setSystem(systems_data);
+        }
+        setSystem(data);
+        console.log(data);
+        console.log(system);
+      } catch (error) {
+        console.log(error);
+        setSystem(systems_data);
+      }
+    };
+    fetchSystemdata();
+  }, []);
   return (
     <main className="h-[calc(100vh-90px)] w-full flex justify-start items-center flex-col">
       <div className="w-[75%] h-[10%] flex justify-end items-center">
@@ -59,11 +79,13 @@ export default function SystemList() {
             <tbody className="text-center">
               {filteredSystems.map((value, i) => (
                 <tr
-                  key={i}
+                  key={i + 1}
                   className="h-[65px] border-b hover:bg-gray-100 transition-all group"
                 >
-                  <td>{value.id}</td>
-                  <td className="max-w-[250px] truncate">{value.name}</td>
+                  <td>{i + 1}</td>
+                  <td className="max-w-[250px] truncate">
+                    {value.container_name}
+                  </td>
                   <td>
                     <div className="flex justify-center items-center group gap-1">
                       <a
@@ -72,33 +94,50 @@ export default function SystemList() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {value.domain}
+                        {value.domain} {value.domain ? "" : "-"}
                       </a>
-                      <ArrowUpRight
-                        size={16}
-                        className="text-sky-700 group-hover:text-sky-900"
-                      />
+                      {value.domain && (
+                        <ArrowUpRight
+                          size={16}
+                          className="text-sky-700 group-hover:text-sky-900"
+                        />
+                      )}
                     </div>
                   </td>
                   <td>{value.type}</td>
                   <td>{value.owner}</td>
                   <td>
                     <div className="relative group text-green-600 font-medium flex justify-center items-center h-[65px] w-full group">
-                      <i className="bx bxs-circle text-green-600 text-[14px] group-hover:opacity-0 duration-200"></i>
-                      <span className="absolute opacity-0 text-sm group-hover:opacity-100 transition-opacity duration-200">
+                      <i
+                        className={
+                          value.status == "running"
+                            ? "bx bxs-circle text-green-600 text-[14px] transition-opacity duration-200 group-hover:opacity-0"
+                            : "bx bxs-circle text-red-500 text-[14px] transition-opacity duration-200 group-hover:opacity-0"
+                        }
+                      ></i>
+                      <span
+                        className={
+                          value.status == "running"
+                            ? "absolute text-sm text-green-600 font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                            : "absolute text-sm text-red-500 font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                        }
+                      >
                         {value.status}
                       </span>
                     </div>
                   </td>
                 </tr>
               ))}
-            {filteredSystems.length === 0 && (
-              <tr>
-                <td colSpan={6} className="h-[65px] border-b hover:bg-gray-100 transition-all group">
-                  No results found
-                </td>
-              </tr>
-            )}
+              {filteredSystems.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="h-[65px] border-b hover:bg-gray-100 transition-all group"
+                  >
+                    No results found
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
