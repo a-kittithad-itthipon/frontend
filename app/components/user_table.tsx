@@ -37,7 +37,7 @@ export default function UserTable() {
   const [msg, setmsg] = useState("");
   const [username, setusername] = useState("");
   const [user_del, setdel_username] = useState("");
-  const [reflesh, setreflesh] = useState(false);
+  const [refresh, setrefresh] = useState(false);
   function userData(params: any) {
     if (params) {
       setData(params);
@@ -89,7 +89,7 @@ export default function UserTable() {
       }
     };
     fetchData();
-  }, [reflesh]);
+  }, [refresh]);
   const change_max_container = async (e: React.FormEvent) => {
     e.preventDefault();
     let max_containers = container;
@@ -112,7 +112,7 @@ export default function UserTable() {
       return;
     }
     setmsg(data.message);
-    setreflesh(!reflesh);
+    setrefresh(!refresh);
     setTimeout(() => {
       setmsg("");
     }, 2000);
@@ -133,7 +133,7 @@ export default function UserTable() {
       return;
     }
     setmsg(data.message);
-    setreflesh(!reflesh);
+    setrefresh(!refresh);
     setTimeout(() => {
       setmsg("");
       setIsOpen(false);

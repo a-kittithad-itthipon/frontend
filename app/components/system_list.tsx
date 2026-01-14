@@ -77,57 +77,57 @@ export default function SystemList() {
               </tr>
             </thead>
             <tbody className="text-center">
-              {filteredSystems.map((value, i) => (
-                <tr
-                  key={i + 1}
-                  className="h-[65px] border-b hover:bg-gray-100 transition-all group"
-                >
-                  <td>{i + 1}</td>
-                  <td className="max-w-[250px] truncate">
-                    {value.container_name}
-                  </td>
-                  <td>
-                    <div className="flex justify-center items-center group gap-1">
-                      <a
-                        href="#"
-                        className="text-sky-700 hover:text-sky-900"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {value.domain} {value.domain ? "" : "-"}
-                      </a>
-                      {value.domain && (
+              {filteredSystems.map((value, i) =>
+                value.domain ? (
+                  <tr
+                    key={i + 1}
+                    className="h-[65px] border-b hover:bg-gray-100 transition-all group"
+                  >
+                    <td>{i + 1}</td>
+                    <td className="max-w-[250px] truncate">
+                      {value.container_name}
+                    </td>
+                    <td>
+                      <div className="flex justify-center items-center group gap-1">
+                        <a
+                          href="#"
+                          className="text-sky-700 hover:text-sky-900"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {value.domain}
+                        </a>
                         <ArrowUpRight
                           size={16}
                           className="text-sky-700 group-hover:text-sky-900"
                         />
-                      )}
-                    </div>
-                  </td>
-                  <td>{value.type}</td>
-                  <td>{value.owner}</td>
-                  <td>
-                    <div className="relative group text-green-600 font-medium flex justify-center items-center h-[65px] w-full group">
-                      <i
-                        className={
-                          value.status == "running"
-                            ? "bx bxs-circle text-green-600 text-[14px] transition-opacity duration-200 group-hover:opacity-0"
-                            : "bx bxs-circle text-red-500 text-[14px] transition-opacity duration-200 group-hover:opacity-0"
-                        }
-                      ></i>
-                      <span
-                        className={
-                          value.status == "running"
-                            ? "absolute text-sm text-green-600 font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                            : "absolute text-sm text-red-500 font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                        }
-                      >
-                        {value.status}
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      </div>
+                    </td>
+                    <td>{value.type}</td>
+                    <td>{value.owner}</td>
+                    <td>
+                      <div className="relative group text-green-600 font-medium flex justify-center items-center h-[65px] w-full group">
+                        <i
+                          className={
+                            value.status == "running"
+                              ? "bx bxs-circle text-green-600 text-[14px] transition-opacity duration-200 group-hover:opacity-0"
+                              : "bx bxs-circle text-red-500 text-[14px] transition-opacity duration-200 group-hover:opacity-0"
+                          }
+                        ></i>
+                        <span
+                          className={
+                            value.status == "running"
+                              ? "absolute text-sm text-green-600 font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                              : "absolute text-sm text-red-500 font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                          }
+                        >
+                          {value.status}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : null
+              )}
               {filteredSystems.length === 0 && (
                 <tr>
                   <td

@@ -128,7 +128,7 @@ export default function History() {
                 <CircleX size={30} />
               </button>
             </div>
-            <div className="w-full h-[80%] p-5 overflow-y-auto text-[10px]">
+            <div className="w-full h-[80%] p-5 overflow-y-auto whitespace-pre-wrap font-mono text-xs">
               {data.details}
             </div>
           </div>

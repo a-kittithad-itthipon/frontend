@@ -2,6 +2,7 @@
 import { div } from "framer-motion/client";
 import { CircleX, Pencil, ScrollText, User, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { setInterval } from "timers/promises";
 
 export default function History() {
   const logs_data = [
@@ -34,7 +35,7 @@ export default function History() {
     },
   ];
   const [logsTable, setLogstable] = useState<any[]>([]);
-  const [details_msg, setDetails_msg] = useState("");
+  const [refresh, setRefresh] = useState(false);
   const [isopen, setisopen] = useState(false);
   const [data, setdata] = useState<any>(null);
 
