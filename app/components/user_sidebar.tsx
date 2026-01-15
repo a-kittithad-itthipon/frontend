@@ -36,10 +36,10 @@ export default function User_sidebar() {
           <span>Upload Project</span>
         </Link>
         <Link
-          href="/users/dns"
+          href="/users/container-manage"
           className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
         >
-          <i className="bx bx-link-external text-xl"></i> <span>Local DNS</span>
+          <i className="bx bx-link-external text-xl"></i> <span>System</span>
         </Link>
         <Link
           href="/users/me"

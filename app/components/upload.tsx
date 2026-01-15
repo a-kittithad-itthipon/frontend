@@ -111,7 +111,7 @@ export default function Upload() {
   };
   const check_domain = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    const allowed = "abcdefghijklmnopqrstuvwxyz0123456789-_.";
+    const allowed = "abcdefghijklmnopqrstuvwxyz0123456789-.";
 
     if (value.includes(" ")) {
       setmsg("Domain : Space not allowed");
@@ -132,7 +132,17 @@ export default function Upload() {
       console.log(ch);
       console.log(value);
       if (!allowed.includes(ch)) {
-        setmsg("Container Name : Special characters not allowed");
+        setmsg("Domain Name : Special characters not allowed");
+        setalertmsg(true);
+        return;
+      }
+      if (value.includes("--") || value.includes("..") || value.includes("-.") || value.includes(".-")) {
+        setmsg("Domain Name : Double  ' -- ' or ' .. ' not allowed");
+        setalertmsg(true);
+        return;
+      }
+      if (value.startsWith("-") || value.startsWith(".")) {
+        setmsg("Domain Name : First  ' - ' or ' . ' not allowed");
         setalertmsg(true);
         return;
       }
@@ -298,7 +308,6 @@ export default function Upload() {
                 <div className="w-[35%] flex flex-col">
                   <p>Project Type</p>
                   <select
-                    id="cars"
                     className="px-5 text-md border h-[55px] w-full rounded-2xl outline-none"
                     onChange={check_type}
                     value={type}
@@ -350,7 +359,10 @@ export default function Upload() {
             </form>
             <div className="h-[5%] w-[80%] flex flex-col justify-start items-start gap-3 pt-5">
               <div className="text-md w-full h-[50px] rounded-2xl flex justify-start items-center gap-3 text-gray-500">
-                <TriangleAlert className={alert_msg && !isOpen ? "" : "hidden"} /> {isOpen ? "" : msg}
+                <TriangleAlert
+                  className={alert_msg && !isOpen ? "" : "hidden"}
+                />{" "}
+                {isOpen ? "" : msg}
               </div>
             </div>
             <div className="h-[15%] w-full flex justify-center items-center">
@@ -380,7 +392,7 @@ export default function Upload() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 transition duration-200">
           <div className="flex flex-col items-center justify-start w-[35%] h-[60%] bg-white rounded-3xl p-1">
             <div className="w-full h-[85%] flex justify-center items-center">
-              {msg == "Loading..."  && alert_msg == false && (
+              {msg == "Loading..." && alert_msg == false && (
                 <div className="flex justify-center items-center w-full h-full flex-col gap-15">
                   <i className="bx bx-loader-alt bx-spin text-7xl"></i>
                   <p className="text-lg">{msg}</p>
@@ -396,7 +408,8 @@ export default function Upload() {
               )}
               {msg != "Loading..." && alert_msg == true && (
                 <div className="flex justify-center items-center w-full h-full flex-col gap-15">
-                  <TriangleAlert size={80}
+                  <TriangleAlert
+                    size={80}
                     className={alert_msg ? "text-red-500" : "hidden"}
                   />
                   <div className="w-[100%] text-md text-center">
@@ -407,7 +420,9 @@ export default function Upload() {
             </div>
             <div className="bg-gray-800 w-[70%] h-[50px] text-white flex justify-center items-center rounded-full overflow-hidden">
               <button
-                onClick={() => {setIsOpen(false) , setmsg("") , setalertmsg(false)}}
+                onClick={() => {
+                  setIsOpen(false), setmsg(""), setalertmsg(false);
+                }}
                 className="w-full h-full cursor-pointer hover:bg-sky-600 transition duration-200"
               >
                 Close

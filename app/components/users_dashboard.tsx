@@ -6,24 +6,10 @@ export default function Get_users_systemlist() {
   const data_container = [
     {
       id: 1,
-      name: "Container A",
-      domain: "system.a.local",
-      type: "app",
-      status: "Running",
-    },
-    {
-      id: 2,
-      name: "Container B",
-      domain: "system.b.local",
-      type: "app",
-      status: "Running",
-    },
-    {
-      id: 3,
-      name: "Container C",
-      domain: "system.c.local",
-      type: "app",
-      status: "Running",
+      container_name: "None",
+      domain: "None",
+      type: "None",
+      status: "None",
     },
   ];
 
