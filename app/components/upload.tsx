@@ -1,6 +1,6 @@
 "use client";
 
-import { TriangleAlert, UploadCloud } from "lucide-react";
+import { Rocket, TriangleAlert, UploadCloud } from "lucide-react";
 import React, { useState } from "react";
 import {
   Select,
@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { div } from "framer-motion/client";
 
 export default function Upload() {
   const [msg, setmsg] = useState("");
@@ -22,6 +23,7 @@ export default function Upload() {
   const [domain, setDomain] = useState("");
   const [new_file, set_new_file] = useState(false);
   const [type, set_type] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const check_file = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.files?.[0];
@@ -146,6 +148,8 @@ export default function Upload() {
   };
   const upload = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsOpen(true);
+    setmsg("Loading...");
 
     if (!file) {
       setmsg("Please Choose .zip File");
@@ -346,7 +350,7 @@ export default function Upload() {
             </form>
             <div className="h-[5%] w-[80%] flex flex-col justify-start items-start gap-3 pt-5">
               <div className="text-md w-full h-[50px] rounded-2xl flex justify-start items-center gap-3 text-gray-500">
-                <TriangleAlert className={alert_msg ? "" : "hidden"} /> {msg}
+                <TriangleAlert className={alert_msg && !isOpen ? "" : "hidden"} /> {isOpen ? "" : msg}
               </div>
             </div>
             <div className="h-[15%] w-full flex justify-center items-center">
@@ -371,6 +375,47 @@ export default function Upload() {
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 transition duration-200">
+          <div className="flex flex-col items-center justify-start w-[35%] h-[60%] bg-white rounded-3xl p-1">
+            <div className="w-full h-[85%] flex justify-center items-center">
+              {msg == "Loading..."  && alert_msg == false && (
+                <div className="flex justify-center items-center w-full h-full flex-col gap-15">
+                  <i className="bx bx-loader-alt bx-spin text-7xl"></i>
+                  <p className="text-lg">{msg}</p>
+                </div>
+              )}
+              {msg != "Loading..." && alert_msg == false && (
+                <div className="flex justify-center items-center w-full h-full flex-col gap-15">
+                  <Rocket size={80} className="text-sky-500" />
+                  <div className="w-[100%] text-md text-center">
+                    <p>{msg}</p>
+                  </div>
+                </div>
+              )}
+              {msg != "Loading..." && alert_msg == true && (
+                <div className="flex justify-center items-center w-full h-full flex-col gap-15">
+                  <TriangleAlert size={80}
+                    className={alert_msg ? "text-red-500" : "hidden"}
+                  />
+                  <div className="w-[100%] text-md text-center">
+                    <p>{msg}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="bg-gray-800 w-[70%] h-[50px] text-white flex justify-center items-center rounded-full overflow-hidden">
+              <button
+                onClick={() => {setIsOpen(false) , setmsg("") , setalertmsg(false)}}
+                className="w-full h-full cursor-pointer hover:bg-sky-600 transition duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
