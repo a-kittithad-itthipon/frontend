@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 
 export default function UserTable() {
   const connt: React.SetStateAction<any[]> = [
-    // {
-    //   container_name: "None",
-    //   domain: "None",
-    //   project_path: "None",
-    //   port_internal: "None",
-    // },
+    {
+      container_name: "None",
+      domain: "None",
+      project_path: "None",
+      port_internal: "None",
+    },
   ];
 
   const [data, setData] = useState<any>(null);
@@ -20,11 +20,17 @@ export default function UserTable() {
   const [domain, setDomain] = useState("");
   const [refresh, setrefresh] = useState(false);
   const [del, setDel] = useState(false);
+  const [containerName, setContainername] = useState("");
+  const [type, set_type] = useState("");
+  const [stack, setStack] = useState("");
 
   function userData(params: any) {
     if (params) {
       setData(params);
       setIsOpen(true);
+      setContainername(params.container_name);
+      set_type("");
+      setStack(params.project_path);
     } else {
       setIsOpen(false);
       setData(null);
@@ -93,6 +99,10 @@ export default function UserTable() {
         setmsg("Domain Name : First  ' - ' or ' . ' not allowed");
         return;
       }
+      if (value.endsWith(".")) {
+        setmsg("Domain Name : End  ' . ' not allowed");
+        return;
+      }
     }
     setmsg("");
     setDomain(value);
@@ -115,6 +125,50 @@ export default function UserTable() {
     };
     fetchContainermanage();
   }, []);
+
+  const check_type = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    let value = e.target.value;
+    set_type(value);
+    // console.log(value)
+  };
+
+  const port_Update = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await fetch("/api/port_update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ port, containerName, type }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setmsg(data.error);
+      return;
+    }
+
+    setmsg(data.message);
+  };
+
+  const del_stack = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await fetch("/api/del_stack", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ stack }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setmsg(data.error);
+      return;
+    }
+    setmsg(data.message);
+    setTimeout(() => {
+      setmsg("");
+      userData(null);
+    }, 200);
+  };
+
   return (
     <main className="flex flex-12 h-full justify-center items-center relative">
       <div className="flex w-[90%] h-[90%] justify-center items-center">
@@ -123,10 +177,10 @@ export default function UserTable() {
             <thead className="bg-gray-800 sticky top-0 z-10">
               <tr className="h-[70px] text-lg text-center text-white">
                 <th className="w-[10%]">No.</th>
-                <th className="w-[20%]">Container Name</th>
-                <th className="w-[20%]">Domain</th>
-                <th className="w-[25%]">Project Path</th>
+                <th className="w-[15%]">Protocol</th>
+                <th className="w-[25%]">Domain</th>
                 <th className="w-[15%]">Port</th>
+                <th className="w-[25%]">Project Path</th>
                 <th className="w-[10%]">Edit</th>
               </tr>
             </thead>
@@ -138,14 +192,14 @@ export default function UserTable() {
                 >
                   <td>{index + 1}</td>
                   <td className="max-w-[80px] truncate">
-                    {container.container_name}
+                    {container.forward_scheme}
                   </td>
                   <td className="max-w-[80px] truncate">{container.domain}</td>
                   <td className="max-w-[80px] truncate">
-                    {container.project_path}
+                    {container.port_internal}
                   </td>
                   <td className="max-w-[80px] truncate">
-                    {container.port_internal}
+                    {container.project_path}
                   </td>
                   <td>
                     <div className="flex justify-center items-center w-full h-full">
@@ -176,7 +230,7 @@ export default function UserTable() {
 
       {isOpen && data && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 transition duration-200">
-          <div className="flex flex-col items-center justify-start w-[25%] h-[50%] bg-white rounded-3xl p-2">
+          <div className="flex flex-col items-center justify-start w-[25%] h-[65%] bg-white rounded-3xl p-2">
             <div className="w-full h-[15%] flex justify-center items-center text-2xl font-[600] flex-col gap-1">
               <span className="h-[60%] flex justify-center items-end">
                 Edit System
@@ -194,17 +248,35 @@ export default function UserTable() {
                 method="post"
                 className="w-full px-5 h-[55%] bg-white flex flex-col justify-start gap-2"
                 id="editForm"
+                onSubmit={port_Update}
               >
+                <div className="flex justify-center items-start flex-col gap-3 mt-5">
+                  <label className="block text-sm font-bold text-[18px]">
+                    Protocol
+                  </label>
+                  <select
+                    className="w-full py-2 border px-3 outline-none rounded-lg"
+                    onChange={check_type}
+                    value={type}
+                    required
+                  >
+                    <option disabled value="">
+                      Choose project type
+                    </option>
+                    <option value="http">http</option>
+                    <option value="https">https</option>
+                  </select>
+                </div>
                 <div className="flex justify-center items-start flex-col gap-3 mt-5">
                   <label className="block text-sm font-bold text-[18px]">
                     Domain Name
                   </label>
                   <input
                     type="text"
-                    className="w-full py-2 border px-3 outline-none rounded-lg"
-                    value={domain}
+                    className="w-full py-2 border px-3 outline-none rounded-lg cursor-not-allowed bg-gray-100"
+                    value={data.domain}
                     onChange={check_domain}
-                    required
+                    readOnly
                     placeholder="Enter Domain"
                   />
                 </div>
@@ -265,12 +337,9 @@ export default function UserTable() {
                     method="post"
                     className="p-2 flex justify-center items-center bg-red-500 text-white w-[80px] rounded-lg cursor-pointer hover:bg-red-700 transition duration-200"
                     id="delForm"
+                    onSubmit={del_stack}
                   >
-                    <input
-                      type="hidden"
-                      name="username_del"
-                      value={data.username}
-                    />
+                    <input type="hidden" name="username_del" value={stack} />
                     <button
                       type="submit"
                       className="cursor-pointer"

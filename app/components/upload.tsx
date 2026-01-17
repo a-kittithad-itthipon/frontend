@@ -136,7 +136,12 @@ export default function Upload() {
         setalertmsg(true);
         return;
       }
-      if (value.includes("--") || value.includes("..") || value.includes("-.") || value.includes(".-")) {
+      if (
+        value.includes("--") ||
+        value.includes("..") ||
+        value.includes("-.") ||
+        value.includes(".-")
+      ) {
         setmsg("Domain Name : Double  ' -- ' or ' .. ' not allowed");
         setalertmsg(true);
         return;
@@ -144,6 +149,10 @@ export default function Upload() {
       if (value.startsWith("-") || value.startsWith(".")) {
         setmsg("Domain Name : First  ' - ' or ' . ' not allowed");
         setalertmsg(true);
+        return;
+      }
+      if (value.endsWith(".")) {
+        setmsg("Domain Name : End  ' . ' not allowed");
         return;
       }
     }

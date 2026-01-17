@@ -31,12 +31,12 @@ export async function POST(req: Request) {
       maxAge: expire,
     });
     
-    res.cookies.set("role", data.role, {
-      httpOnly: false,
-      sameSite: "lax",
-      path: "/",
-      maxAge: expire,
-    });
+    // res.cookies.set("role", data.role, {
+    //   httpOnly: false,
+    //   sameSite: "lax",
+    //   path: "/",
+    //   maxAge: expire,
+    // });
 
     // console.log(NextResponse.json({ res: res, data: data }));
     // console.log(res.cookies);
