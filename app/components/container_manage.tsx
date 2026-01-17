@@ -124,7 +124,7 @@ export default function UserTable() {
       }
     };
     fetchContainermanage();
-  }, []);
+  }, [refresh]);
 
   const check_type = (e: React.ChangeEvent<HTMLSelectElement>) => {
     let value = e.target.value;
@@ -148,6 +148,10 @@ export default function UserTable() {
     }
 
     setmsg(data.message);
+    setrefresh(!refresh);
+    setTimeout(() => {
+      setmsg("");
+    }, 200);
   };
 
   const del_stack = async (e: React.FormEvent) => {
@@ -163,6 +167,7 @@ export default function UserTable() {
       return;
     }
     setmsg(data.message);
+    setrefresh(!refresh);
     setTimeout(() => {
       setmsg("");
       userData(null);
