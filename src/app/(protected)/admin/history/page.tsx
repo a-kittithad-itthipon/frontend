@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { AdminHistory } from "@/components/admin/history";
+import { AdminHistory } from "@/features/admin/components/history";
 
 export const metadata: Metadata = {
   title: "History - Admin",

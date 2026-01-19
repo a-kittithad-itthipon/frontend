@@ -1,4 +1,4 @@
-import { UserHistory } from "@/components/user/components/history";
+import { UserHistory } from "@/features/user/components/history";
 
 const dashboard = () => {
   return (

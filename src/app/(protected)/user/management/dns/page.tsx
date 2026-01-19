@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import DNS from "@/components/user/components/dns";
+import DNS from "@/features/user/components/dns";
 
 export const metadata: Metadata = {
   title: "Dashboard - User",

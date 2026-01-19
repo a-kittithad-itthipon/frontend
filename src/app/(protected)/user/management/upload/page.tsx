@@ -1,4 +1,4 @@
-import { Upload } from "@/components/admin/upload";
+import { Upload } from "@/features/admin/components/upload";
 
 export default function UploadPage() {
   return (

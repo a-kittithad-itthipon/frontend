@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Upload } from "@/components/admin/upload";
+import { Upload } from "@/features/admin/components/upload";
 
 export const metadata: Metadata = {
   title: "Upload - Admin",

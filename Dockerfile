@@ -1,12 +1,11 @@
-# ---- Base image ----
+# ---------- Base ----------
 FROM node:20-alpine AS base
 WORKDIR /app
 
-# ---- Dependencies ----
+# ---------- Dependencies ----------
 FROM base AS deps
 COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
 
-# Install dependencies based on the lock file
 RUN \
   if [ -f package-lock.json ]; then npm ci; \
   elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
@@ -14,22 +13,25 @@ RUN \
   else echo "No lockfile found" && exit 1; \
   fi
 
-# ---- Build ----
+# ---------- Build ----------
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build Next.js
-RUN corepack enable pnpm && pnpm build
+RUN \
+  if [ -f package-lock.json ]; then npm run build; \
+  elif [ -f yarn.lock ]; then yarn build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm build; \
+  fi
 
-# ---- Production ----
+# ---------- Production ----------
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=3000
 
-# If using Next.js standalone output (recommended)
-# next.config.js → output: 'standalone'
+# Next.js standalone output
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public

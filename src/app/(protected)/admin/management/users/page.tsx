@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { UserTable } from "@/components/admin/user-table";
+import { UserTable } from "@/features/admin/components/user-table";
 
 export const metadata: Metadata = {
   title: "User Management - Admin",

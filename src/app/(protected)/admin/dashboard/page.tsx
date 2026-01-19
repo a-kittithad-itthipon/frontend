@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 
-import { SystemDashboard } from "@/components/admin/system-dashboard";
+import { SystemDashboard } from "@/features/admin/components/system-dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { QuickStatus } from "@/components/admin/quickstatus";
+import { QuickStatus } from "@/features/admin/components/quickstatus";
 import { MonitorCog } from "lucide-react";
 
 const defaultValues = {
