@@ -1,146 +1,152 @@
 "use client";
 
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
 import { UserCheck, UserX } from "lucide-react";
-import { useState } from "react";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter.",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter.",
+    })
+    .regex(/[0-9]/, { message: "Password must contain at least one number." })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: "Password must contain at least one special character.",
+    }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter.",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter.",
+    })
+    .regex(/[0-9]/, { message: "Password must contain at least one number." })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: "Password must contain at least one special character.",
+    }),
+});
 
 export function ChangePasswordForm() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
-  const [message, setMessage] = useState("");
-  const [otp, setOtp] = useState("");
-  const [password, setPassword] = useState("");
+  const [isSubmiting, setIsSubmitting] = React.useState(false);
 
-  const validateOtp = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-    if (!/^\d*$/.test(value)) {
-      setIsSuccess(false);
-      setIsOpen(true);
-      setMessage("OTP: Only numbers allowed");
-      return;
+  function handleSubmitC(data: z.infer<typeof formSchema>) {
+    const { password, confirmPassword } = data;
+
+    if (password !== confirmPassword) {
+      console.log("Password is not match");
     }
 
-    if (value.length > 6) {
-      setIsSuccess(false);
-      setIsOpen(true);
-      setMessage("OTP: Maximum 6 digits");
-      return;
-    }
-
-    setOtp(value);
-  };
-
-  const forgotRepassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setIsOpen(true);
-    setIsSuccess(null);
-    setMessage("Loading...");
-
-    try {
-      const res = await fetch("/api/forgot_repassword", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setIsSuccess(false);
-        setMessage(data.error || "Something went wrong");
-
-        if (data.error === "OTP Session Time Out") {
-          setTimeout(() => (window.location.href = "/"), 500);
-        }
-        return;
-      }
-
-      setIsSuccess(true);
-      setMessage(data.message);
-
-      setTimeout(() => {
-        setIsOpen(false);
-        window.location.href = "/login";
-      }, 1000);
-    } catch {
-      setIsSuccess(false);
-      setMessage("Server Error");
-    }
-  };
+    console.log("Successful");
+  }
 
   return (
-    <form
-      id="forgot"
-      onSubmit={forgotRepassword}
-      className="w-[80%] h-[70%] flex flex-col justify-evenly items-center"
-    >
-      {/* OTP */}
-      <div className="w-full flex flex-col gap-2">
-        <label className="text-lg">OTP</label>
-        <input
-          type="text"
-          className="border p-3 w-full rounded-2xl outline-none focus:border-gray-500 transition"
-          required
-          value={otp}
-          onChange={validateOtp}
-        />
-      </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">
+          Create New Password
+        </CardTitle>
+        <CardDescription />
+      </CardHeader>
+      <CardContent>
+        {/* Global error */}
 
-      {/* Password */}
-      <div className="w-full flex flex-col gap-2">
-        <label className="text-lg">New Password</label>
-        <input
-          type="password"
-          className="border p-3 w-full rounded-2xl outline-none focus:border-gray-500 transition"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="w-full p-3 rounded-full bg-gray-800 text-white hover:bg-gray-100 hover:text-gray-800 transition font-medium text-lg"
-      >
-        Send
-      </button>
-
-      {/* Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="h-[30%] w-[22%] bg-white rounded-3xl flex flex-col justify-center items-center p-4 gap-4">
-            {isSuccess === null && (
-              <>
-                <i className="bx bx-loader-alt bx-spin text-5xl" />
-                <p>{message}</p>
-              </>
+        <form
+          id="change-password"
+          onSubmit={form.handleSubmit(handleSubmitC)}
+          className="space-y-6"
+        >
+          <Controller
+            name="password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  aria-invalid={fieldState.invalid}
+                >
+                  New Password
+                </FieldLabel>
+                <Input
+                  {...field}
+                  type="password"
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
             )}
+          />
 
-            {isSuccess === true && (
-              <>
-                <UserCheck size={40} className="text-green-600" />
-                <p>{message}</p>
-              </>
+          <Controller
+            name="confirmPassword"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  aria-invalid={fieldState.invalid}
+                >
+                  Confirm New Password
+                </FieldLabel>
+                <Input
+                  {...field}
+                  type="password"
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
             )}
-
-            {isSuccess === false && (
-              <>
-                <UserX size={40} className="text-red-600" />
-                <p>{message}</p>
-              </>
-            )}
-
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="bg-gray-800 text-white w-[70%] h-11.25 rounded-full hover:bg-sky-600 transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </form>
+          />
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field>
+          <Button type="submit" form="change-password">
+            Reset password
+          </Button>
+        </Field>
+      </CardFooter>
+    </Card>
   );
 }

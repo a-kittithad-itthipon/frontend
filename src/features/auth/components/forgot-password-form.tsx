@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,24 +15,21 @@ import {
   CardFooter,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 
-import { UserCheck, UserX } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
   username: z.string().min(1, "Please enter username"),
 });
 
 export function ForgotPasswordForm() {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,48 +37,34 @@ export function ForgotPasswordForm() {
     },
   });
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
-  const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("");
-
-  const forgotUsername = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setIsOpen(true);
-    setIsSuccess(null);
-    setMessage("Loading...");
+  async function handleForgotUsername(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    setErrorMessage(null);
 
     try {
-      const res = await fetch("/api/forgot", {
+      const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify(values),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setIsSuccess(false);
-        setMessage(data.error || "Something went wrong");
-        return;
+        throw new Error(data?.error ?? "Request failed");
       }
 
-      setIsSuccess(true);
-      setMessage(data.message);
-
-      setTimeout(() => {
-        setIsOpen(false);
-        redirect("/change-password");
-      }, 1000);
-    } catch {
-      setIsSuccess(false);
-      setMessage("Server Error");
+      form.reset();
+      router.push("/change-password");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again later.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  function handleForgotUsername(data: z.infer<typeof formSchema>) {
-    console.log(data);
   }
 
   return (
@@ -117,49 +100,19 @@ export function ForgotPasswordForm() {
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  disabled={isSubmitting}
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
+
+                {/* api error */}
+                {errorMessage && (
+                  <p className="text-sm text-destructive">{errorMessage}</p>
+                )}
               </Field>
             )}
           />
-
-          {/* Modal */}
-          {isOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-              <div className="h-[30%] w-[22%] bg-white rounded-3xl flex flex-col justify-center items-center p-4 gap-4">
-                {isSuccess === null && (
-                  <>
-                    <i className="bx bx-loader-alt bx-spin text-5xl" />
-                    <p>{message}</p>
-                  </>
-                )}
-
-                {isSuccess === true && (
-                  <>
-                    <UserCheck size={40} className="text-green-600" />
-                    <p>{message}</p>
-                  </>
-                )}
-
-                {isSuccess === false && (
-                  <>
-                    <UserX size={40} className="text-red-600" />
-                    <p>{message}</p>
-                  </>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="bg-gray-800 text-white w-[70%] h-11.25 rounded-full hover:bg-sky-600 transition"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          )}
         </form>
       </CardContent>
 
@@ -169,8 +122,9 @@ export function ForgotPasswordForm() {
             type="submit"
             form="forgot-password"
             className="cursor-pointer"
+            disabled={isSubmitting}
           >
-            Send
+            {isSubmitting ? <Spinner /> : "Submit"}
           </Button>
 
           <Link

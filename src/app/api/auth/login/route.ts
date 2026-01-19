@@ -4,31 +4,47 @@ export async function POST(req: Request) {
   try {
     const { username, password } = await req.json();
 
-    const flaskRes = await fetch(`${process.env.FLASK_API_URL}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    let flaskRes: Response;
 
-    const data = await flaskRes.json();
+    try {
+      // This fails if Flask is down
+      flaskRes = await fetch(`${process.env.FLASK_API_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+    } catch (err) {
+      // Flask server unreachable
+      return NextResponse.json(
+        { message: "Authentication service is currently unavailable." },
+        { status: 503 },
+      );
+    }
 
-    // Forward backend error
+    let data: any;
+    try {
+      data = await flaskRes.json();
+    } catch {
+      data = null;
+    }
+
+    // Forward backend error (401, 403, etc.)
     if (!flaskRes.ok) {
       return NextResponse.json(
-        { error: data.error },
+        { message: data?.error || "Login failed." },
         { status: flaskRes.status },
       );
     }
 
+    // Success
     const res = NextResponse.json(
       { message: "Login successful" },
       { status: 200 },
     );
 
-    // Token timeout expire
-    const expire = 4 * 60 * 60;
+    const expire = 4 * 60 * 60; // 4 hours
 
     res.cookies.set("token", data.token, {
       httpOnly: true,
@@ -37,15 +53,15 @@ export async function POST(req: Request) {
       maxAge: expire,
     });
 
-    res.cookies.set("role", data.role, {
-      httpOnly: false,
-      sameSite: "lax",
-      path: "/",
-      maxAge: expire,
-    });
+    // Debug only
+    console.log(data.token);
 
     return res;
   } catch (error) {
-    return NextResponse.json(error);
+    // Invalid JSON / unexpected server error
+    return NextResponse.json(
+      { message: "Invalid request or server error." },
+      { status: 500 },
+    );
   }
 }

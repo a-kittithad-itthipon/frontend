@@ -1,43 +1,51 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 
 /* --------------------------------------------------
  * Route definitions
  * -------------------------------------------------- */
 const PUBLIC_ROUTES = ["/", "/contact", "/active-site"];
 const AUTH_ROUTES = ["/login", "/forgot-password", "/register"];
+
 const ROLE_DASHBOARD: Record<string, string> = {
   admin: "/admin/dashboard",
   user: "/user/dashboard",
 };
 
-export function proxy(req: NextRequest) {
+/* --------------------------------------------------
+ * JWT config
+ * -------------------------------------------------- */
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+
+/* --------------------------------------------------
+ * Middleware
+ * -------------------------------------------------- */
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const token = req.cookies.get("token")?.value;
-  const role = req.cookies.get("role")?.value;
   const tokenForgot = req.cookies.get("token_forgot")?.value;
 
   /* --------------------------------------------------
-   * Allow public routes always
+   * Public routes
    * -------------------------------------------------- */
   if (PUBLIC_ROUTES.includes(pathname)) {
     return NextResponse.next();
   }
 
   /* --------------------------------------------------
-   * Forgot-password flow (forced)
+   * Forgot-password forced flow
    * -------------------------------------------------- */
   if (tokenForgot) {
     if (pathname === "/change-password") {
       return NextResponse.next();
     }
-
     return NextResponse.redirect(new URL("/change-password", req.url));
   }
 
   /* --------------------------------------------------
-   * Unauthenticated user
+   * Unauthenticated users
    * -------------------------------------------------- */
   if (!token) {
     if (pathname === "/change-password") {
@@ -52,26 +60,43 @@ export function proxy(req: NextRequest) {
   }
 
   /* --------------------------------------------------
-   * Authenticated user – role-based protection
+   * Verify JWT & extract role
+   * -------------------------------------------------- */
+  let role: string | undefined;
+
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    role = payload.role as string;
+  } catch (err) {
+    // Invalid / expired / tampered token
+    const res = NextResponse.redirect(new URL("/login", req.url));
+    res.cookies.delete("token");
+    return res;
+  }
+
+  /* --------------------------------------------------
+   * Role-based access control
    * -------------------------------------------------- */
 
   // Admin-only routes
   if (pathname.startsWith("/admin")) {
     return role === "admin"
       ? NextResponse.next()
-      : NextResponse.redirect(new URL("/login", req.url));
+      : NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
   // User-only routes
   if (pathname.startsWith("/user")) {
     return role === "user"
       ? NextResponse.next()
-      : NextResponse.redirect(new URL("/login", req.url));
+      : NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
-  // Prevent logged-in users from visiting auth pages
+  /* --------------------------------------------------
+   * Prevent logged-in users from auth pages
+   * -------------------------------------------------- */
   if (AUTH_ROUTES.includes(pathname)) {
-    const redirectTo = ROLE_DASHBOARD[role ?? ""];
+    const redirectTo = ROLE_DASHBOARD[role];
     if (redirectTo) {
       return NextResponse.redirect(new URL(redirectTo, req.url));
     }

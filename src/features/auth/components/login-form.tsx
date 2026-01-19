@@ -23,49 +23,56 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { LoginSchema, loginSchema } from "@/lib/validators/login.schema";
 import { Spinner } from "@/components/ui/spinner";
-import { Rocket, TriangleAlert } from "lucide-react";
+import { Rocket } from "lucide-react";
+import z from "zod";
+
+const formSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password length must be 8 characters"),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
 
 export function LoginForm() {
   const router = useRouter();
 
-  const loginForm = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { username: "", password: "" },
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
   });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
-  async function handleLogin(values: LoginSchema) {
-    const { username, password } = values;
-
+  async function handleLogin(values: FormSchema) {
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/login`, {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       });
 
-      // Safely parse JSON
       const data = await res.json();
 
-      if (!res.ok) return;
+      if (!res.ok) {
+        setErrorMessage(data?.message || "Login failed.");
+        return;
+      }
 
-      // Redirect based on role
-      router.push(
-        data.role === "admin" ? "/admin/dashboard" : "/user/dashboard",
-      );
-    } catch (error) {
-      setErrorMessage(
-        "We’re having trouble signing you in. Please try again later.",
-      );
+      // ✅ Let middleware handle role-based redirect
+      router.replace("/login");
+    } catch {
+      setErrorMessage("Authentication service is unavailable.");
     } finally {
       setIsSubmitting(false);
     }
@@ -78,37 +85,34 @@ export function LoginForm() {
           <Rocket />
           <span>Adocs</span>
         </CardTitle>
+        <CardDescription>
+          {/* API ERROR MESSAGE */}
+          {errorMessage && (
+            <p className="text-center text-sm text-destructive mt-2">
+              {errorMessage}
+            </p>
+          )}
+        </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {errorMessage && (
-          <div className="flex gap-2 items-center border rounded-md border-destructive py-2 px-3">
-            <TriangleAlert className="text-destructive" />
-            <span className="text-sm text-destructive">{errorMessage}</span>
-          </div>
-        )}
-
-        <form id="login-form" onSubmit={loginForm.handleSubmit(handleLogin)}>
+      <CardContent>
+        <form id="login-form" onSubmit={form.handleSubmit(handleLogin)}>
           <FieldGroup>
+            {/* USERNAME */}
             <Controller
               name="username"
-              control={loginForm.control}
+              control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel
-                    aria-invalid={fieldState.invalid}
-                    htmlFor={field.name}
-                  >
-                    Username
-                  </FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Username</FieldLabel>
                   <Input
                     {...field}
                     disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
                     onChange={(e) => {
                       field.onChange(e);
-                      setErrorMessage(null); // clear error on change
+                      setErrorMessage(null);
                     }}
-                    aria-invalid={fieldState.invalid}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -117,22 +121,22 @@ export function LoginForm() {
               )}
             />
 
+            {/* PASSWORD */}
             <Controller
               name="password"
-              control={loginForm.control}
+              control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-
                   <Input
                     {...field}
                     type="password"
                     disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
                     onChange={(e) => {
                       field.onChange(e);
                       setErrorMessage(null);
                     }}
-                    aria-invalid={fieldState.invalid}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -141,16 +145,16 @@ export function LoginForm() {
               )}
             />
           </FieldGroup>
-        </form>
 
-        <div className="flex items-center justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-sm text-primary hover:underline"
-          >
-            Forgot your password?
-          </Link>
-        </div>
+          <div className="flex items-center justify-end mt-2">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-primary hover:underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+        </form>
       </CardContent>
 
       <CardFooter>
@@ -158,7 +162,7 @@ export function LoginForm() {
           <Button
             type="submit"
             form="login-form"
-            className="w-full cursor-pointer"
+            className="w-full"
             disabled={isSubmitting}
           >
             {isSubmitting ? <Spinner /> : "Log in"}

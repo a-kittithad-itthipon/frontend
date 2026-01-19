@@ -12,11 +12,10 @@ export default async function DashboardLayout({
 }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const role = cookieStore.get("role")?.value as "admin" | "user"; // "admin" or "user"
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar role={role} />
+      <AppSidebar role="admin" />
       <SidebarInset>
         <header className="flex sticky top-0 z-30 h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
           <AppSidebarTrigger />

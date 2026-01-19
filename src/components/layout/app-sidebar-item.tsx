@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import type { MenuItem } from "@/types/sidebar";
 
 import { cn } from "@/lib/utils";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-
-import type { MenuItem } from "@/types/sidebar";
 
 type ItemType = Extract<MenuItem, { type: "item" }>;
 

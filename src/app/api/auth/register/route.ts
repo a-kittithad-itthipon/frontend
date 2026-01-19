@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { username, email, password, create_db } = await req.json();
+    const { username, email, password, createDb } = await req.json();
+
     const flaskRes = await fetch("http://localhost:5000/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -10,10 +11,12 @@ export async function POST(req: Request) {
         username,
         email,
         password,
-        create_db,
+        create_db: createDb,
       }),
     });
+
     const flaskData = await flaskRes.json();
+
     return NextResponse.json(flaskData, {
       status: flaskRes.status,
     });
