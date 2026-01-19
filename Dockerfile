@@ -20,7 +20,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build Next.js
-RUN npm run build
+RUN corepack enable pnpm && pnpm build
 
 # ---- Production ----
 FROM node:20-alpine AS runner
