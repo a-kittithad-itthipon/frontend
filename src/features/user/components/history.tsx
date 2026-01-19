@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { USER_ITEMS } from "@/lib/constants/user-history";
+import { USER_ITEMS } from "@/constants/history";
 import { CircleX, Pencil, ScrollText, User, X } from "lucide-react";
 
 export function UserHistory() {

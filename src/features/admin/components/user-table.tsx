@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { USER_ITEMS } from "@/constants/users";
-import { UserModal } from "@/components/admin/user-modal";
+import { UserModal } from "@/features/admin/components/user-modal";
 
 import {
   Table,
