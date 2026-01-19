@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# build output
+.next
+out
+dist
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env files
+.env*
+!.env.production
+
+# misc
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+
+# OS
+.DS_Store
