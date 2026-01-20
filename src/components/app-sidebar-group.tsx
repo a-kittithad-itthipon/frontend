@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuSub,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import type { MenuItem } from "@/types/sidebar";
@@ -28,6 +29,14 @@ export function AppSidebarGroup({ group, pathname }: AppSidebarGroupProps) {
     pathname.startsWith(child.href),
   );
   const childPathname = usePathname();
+  const { isMobile, toggleSidebar } = useSidebar();
+
+  // If mobile then toggle sidebar
+  function handleToggleSidebar() {
+    if (isMobile) {
+      toggleSidebar();
+    }
+  }
 
   return (
     <Collapsible defaultOpen={isOpen}>
@@ -46,6 +55,7 @@ export function AppSidebarGroup({ group, pathname }: AppSidebarGroupProps) {
                 <SidebarMenuButton
                   asChild
                   isActive={childPathname === child.href}
+                  onClick={handleToggleSidebar}
                 >
                   <Link href={child.href}>{child.label}</Link>
                 </SidebarMenuButton>

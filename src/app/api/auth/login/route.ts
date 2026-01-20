@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { username, password } = await req.json();
+    const body = await req.json();
 
     let flaskRes: Response;
 
@@ -13,7 +13,10 @@ export async function POST(req: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username: body.username,
+          password: body.password,
+        }),
       });
     } catch (err) {
       // Flask server unreachable

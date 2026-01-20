@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { AppSidebarItem } from "./app-sidebar-item";
 import { AppSidebarGroup } from "./app-sidebar-group";
@@ -29,14 +30,23 @@ export function AppSidebar({ role }: { role: "admin" | "user" }) {
     if (res.ok) return redirect("/login");
   }
 
+  const { isMobile, toggleSidebar } = useSidebar();
+
+  // If mobile then toggle sidebar
+  function handleToggleSidebar() {
+    if (isMobile) {
+      toggleSidebar();
+    }
+  }
+
   return (
     <Sidebar className="*:bg-background">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" asChild onClick={handleToggleSidebar}>
               <Link
-                href="/"
+                href={`/${role}/dashboard`}
                 className="flex items-center justify-center gap-2 text-xl font-bold"
               >
                 <Rocket />

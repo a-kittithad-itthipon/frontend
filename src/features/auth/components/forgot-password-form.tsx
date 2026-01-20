@@ -27,7 +27,6 @@ const formSchema = z.object({
 
 export function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,7 +38,6 @@ export function ForgotPasswordForm() {
 
   async function handleForgotUsername(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    setErrorMessage(null);
 
     try {
       const res = await fetch("/api/auth/forgot-password", {
@@ -51,17 +49,25 @@ export function ForgotPasswordForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error ?? "Request failed");
+        if (res.status === 401) {
+          form.setError("root", {
+            type: "server",
+            message: data.error,
+          });
+
+          return;
+        }
       }
 
       form.reset();
       router.push("/change-password");
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong. Please try again later.",
-      );
+      form.setError("root", {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again later.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -74,7 +80,12 @@ export function ForgotPasswordForm() {
           Recover your account
         </CardTitle>
         <CardDescription>
-          Please enter your username and we&apos;ll send OTP to your email
+          {/* API ERROR MESSAGE */}
+          {form.formState.errors.root?.message && (
+            <p className="text-center text-sm text-destructive mt-2">
+              {form.formState.errors.root.message}
+            </p>
+          )}
         </CardDescription>
       </CardHeader>
 
@@ -104,11 +115,6 @@ export function ForgotPasswordForm() {
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
-                )}
-
-                {/* api error */}
-                {errorMessage && (
-                  <p className="text-sm text-destructive">{errorMessage}</p>
                 )}
               </Field>
             )}

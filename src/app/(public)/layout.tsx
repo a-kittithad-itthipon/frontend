@@ -1,5 +1,5 @@
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export default function PublicLayout({
   children,
@@ -7,12 +7,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-svh flex-col">
       <SiteHeader />
 
-      <main className="flex-1 px-4 py-8 sm:px-6 md:px-12 lg:px-16">
-        {children}
-      </main>
+      <main className="flex flex-1 flex-col">{children}</main>
 
       <SiteFooter />
     </div>

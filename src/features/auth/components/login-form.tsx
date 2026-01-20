@@ -53,7 +53,7 @@ export function LoginForm() {
 
   async function handleLogin(values: FormSchema) {
     setIsSubmitting(true);
-    setErrorMessage(null);
+    form.clearErrors("root");
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -65,14 +65,22 @@ export function LoginForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMessage(data?.message || "Login failed.");
+        form.setError("root", {
+          type: "server",
+          message: data.message,
+        });
         return;
       }
 
-      // ✅ Let middleware handle role-based redirect
+      //  Let middleware handle role-based redirect
       router.replace("/login");
-    } catch {
-      setErrorMessage("Authentication service is unavailable.");
+    } catch (error) {
+      form.setError("root", {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again later.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -87,9 +95,9 @@ export function LoginForm() {
         </CardTitle>
         <CardDescription>
           {/* API ERROR MESSAGE */}
-          {errorMessage && (
+          {form.formState.errors.root?.message && (
             <p className="text-center text-sm text-destructive mt-2">
-              {errorMessage}
+              {form.formState.errors.root.message}
             </p>
           )}
         </CardDescription>
@@ -162,7 +170,7 @@ export function LoginForm() {
           <Button
             type="submit"
             form="login-form"
-            className="w-full"
+            className="w-full cursor-pointer"
             disabled={isSubmitting}
           >
             {isSubmitting ? <Spinner /> : "Log in"}

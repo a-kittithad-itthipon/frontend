@@ -1,9 +1,10 @@
 import { cookies } from "next/headers";
 
-import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { AppSidebarTrigger } from "@/components/layout/app-sidebar-trigger";
+import { AppSidebarTrigger } from "@/components/app-sidebar-trigger";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default async function DashboardLayout({
   children,
@@ -19,6 +20,9 @@ export default async function DashboardLayout({
       <SidebarInset>
         <header className="flex sticky top-0 z-30 h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
           <AppSidebarTrigger />
+          <div className="ml-auto">
+            <ModeToggle />
+          </div>
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4">

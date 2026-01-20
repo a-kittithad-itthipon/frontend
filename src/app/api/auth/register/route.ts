@@ -2,25 +2,30 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { username, email, password, createDb } = await req.json();
+    const body = await req.json();
 
-    const flaskRes = await fetch("http://localhost:5000/api/register", {
+    const flaskRes = await fetch(`${process.env.FLASK_API_URL}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username,
-        email,
-        password,
-        create_db: createDb,
+        username: body.username,
+        email: body.email,
+        password: body.password,
+        create_db: body.database,
       }),
     });
 
-    const flaskData = await flaskRes.json();
+    const data = await flaskRes.json().catch(() => ({
+      message: "Invalid response from backend",
+    }));
 
-    return NextResponse.json(flaskData, {
+    return NextResponse.json(data, {
       status: flaskRes.status,
     });
   } catch (error) {
-    return NextResponse.json(error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

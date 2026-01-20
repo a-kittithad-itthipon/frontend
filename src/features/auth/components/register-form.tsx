@@ -13,6 +13,7 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
+  CardDescription,
 } from "@/components/ui/card";
 import {
   Field,
@@ -28,7 +29,7 @@ import { DynamicTooltip } from "@/components/dynamic-tooltip";
 
 const registerSchema = z.object({
   username: z.string().min(1, "Username is required"),
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long.")
@@ -55,34 +56,43 @@ export function RegisterForm() {
     },
   });
 
-  async function handleSubmitRegister({
-    username,
-    email,
-    password,
-    database,
-  }: RegisterFormValues) {
+  async function handleSubmitRegister(values: RegisterFormValues) {
     setIsLoading(true);
+    form.clearErrors("root");
 
+    // Call API
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-          createDb: database,
-        }),
+        body: JSON.stringify(values),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        throw new Error("Registration failed");
+        if (res.status === 409) {
+          form.setError("root", {
+            type: "server",
+            message: data.message || "Username is already exists",
+          });
+        } else {
+          form.setError("root", {
+            message: "Something went wrong",
+          });
+        }
+        return;
       }
 
       form.reset();
       router.push("/login");
     } catch (error) {
-      console.error(error);
+      form.setError("root", {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again later.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -92,6 +102,14 @@ export function RegisterForm() {
     <Card>
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Create an account</CardTitle>
+        <CardDescription>
+          {/* API ERROR MESSAGE */}
+          {form.formState.errors.root?.message && (
+            <p className="text-center text-sm text-destructive mt-2">
+              {form.formState.errors.root.message}
+            </p>
+          )}
+        </CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -149,6 +167,7 @@ export function RegisterForm() {
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   disabled={isLoading}
+                  className="cursor-pointer"
                 />
                 <div className="flex items-center gap-2">
                   <FieldLabel>Create Database</FieldLabel>
@@ -168,7 +187,12 @@ export function RegisterForm() {
 
       <CardFooter>
         <Field className="w-full">
-          <Button type="submit" form="register-form" disabled={isLoading}>
+          <Button
+            type="submit"
+            form="register-form"
+            className="cursor-pointer"
+            disabled={isLoading}
+          >
             {isLoading ? <Spinner /> : "Submit"}
           </Button>
 

@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
-export default function Get_users_systemlist() {
+export function UserDashboard() {
   const data = [
     {
       id: 1,

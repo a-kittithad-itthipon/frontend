@@ -3,8 +3,8 @@ import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
-    const { otp, password } = await req.json();
-    // console.log({ password, newPassword });
+    const body = await req.json();
+
     const cookieStore = await cookies();
     const token_forgot = cookieStore.get("token_forgot");
 
@@ -16,20 +16,23 @@ export async function POST(req: Request) {
     }
 
     const flaskRes = await fetch(
-      "http://localhost:5000/api/forgot_repassword",
+      `${process.env.FLASK_API_URL}/api/forgot_repassword`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token_forgot.value}`,
         },
-        body: JSON.stringify({ otp, password }),
+        body: JSON.stringify({ otp: body.otp, password: body.password }),
       },
     );
+
     const data = await flaskRes.json();
+
     if (!flaskRes.ok) {
       return NextResponse.json(data, { status: flaskRes.status });
     }
+
     const res = NextResponse.json(data, { status: flaskRes.status });
     res.cookies.set("token_forgot", "", {
       httpOnly: true,

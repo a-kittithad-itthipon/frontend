@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { USER_ITEMS } from "@/constants/users";
+import { USER_ITEMS } from "@/features/admin/constants/users";
 import { UserModal } from "@/features/admin/components/user-modal";
 
 import {

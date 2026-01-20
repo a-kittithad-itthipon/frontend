@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-export function Profile() {
+export function AdminProfile() {
   const [userData, setUserData] = useState({
     username: "Loading...",
     email: "Loading...",
