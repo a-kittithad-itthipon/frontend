@@ -113,7 +113,7 @@ const dashboard = async () => {
             </Link>
             <a
               className="h-[90%] w-[22%] border rounded-3xl flex justify-center items-center gap-3 flex-col p-2 transition duration-200 shadow-gray-100 hover:bg-gray-800 hover:text-white"
-              href="https://dashdot.local"
+              href="https://pma.addp.site"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -131,7 +131,7 @@ const dashboard = async () => {
             </a>
             <a
               className="h-[90%] w-[22%] border rounded-3xl flex justify-center items-center gap-3 flex-col p-2 transition duration-200 shadow-gray-100 hover:bg-gray-800 hover:text-white"
-              href="https://dashdot.local"
+              href="https://docs.addp.site"
               target="_blank"
               rel="noopener noreferrer"
             >
