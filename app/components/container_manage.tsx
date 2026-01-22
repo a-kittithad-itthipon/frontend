@@ -3,14 +3,7 @@ import { Pencil, Rocket, User, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export default function UserTable() {
-  const connt: React.SetStateAction<any[]> = [
-    {
-      container_name: "None",
-      domain: "None",
-      project_path: "None",
-      port_internal: "None",
-    },
-  ];
+  const connt: React.SetStateAction<any[]> = [];
 
   const [data, setData] = useState<any>(null);
   const [isOpen, setIsOpen] = useState(false);

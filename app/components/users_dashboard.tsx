@@ -1,17 +1,9 @@
 "use client";
 import { ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
 export default function Get_users_systemlist() {
-  const data_container = [
-    {
-      id: 1,
-      container_name: "None",
-      domain: "None",
-      type: "None",
-      status: "None",
-    },
-  ];
+  const data_container: SetStateAction<any[]> = [];
 
   const [container, setContainer] = useState<any[]>([]);
 
@@ -33,6 +25,18 @@ export default function Get_users_systemlist() {
     fetchContainer();
   }, []);
 
+  if (container.length === 0) {
+    return (
+      <tr>
+        <td
+          colSpan={6}
+          className="h-[65px] border-b hover:bg-gray-100 transition-all group"
+        >
+          No results found
+        </td>
+      </tr>
+      );
+  }
   return container.map((item, index) => (
     <tr
       key={index + 1}
