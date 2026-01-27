@@ -1,3 +1,4 @@
+"use client";
 import User_sidebar from "@/app/components/user_sidebar";
 import Get_users_systemlist from "@/app/components/users_dashboard";
 import {
@@ -8,45 +9,42 @@ import {
   IdCard,
   MonitorCog,
   SquareActivity,
-  User,
   Users,
 } from "lucide-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const user_data = {
+const Dashboard =  () => {
+
+const [data, setData] = useState({
   username: "Loading...",
+  user_total: 0,
   upload_total: 0,
-};
-const get_data = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token");
+  req_total: 0,
+  user_upload_total: 0,
+});
 
-  if (!token) {
-    return user_data;
-  }
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/api/dashboard");
+      
+      if (!res.ok) {
+        console.error("fetch Error");
+      }
 
-  try {
-    const res = await fetch("http://localhost:5000/api/dashboard", {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-    });
+      const data = await res.json();
+      setData(data);
 
-    if (!res.ok) {
-      return user_data;
+    } catch (error) {
+      console.error(error);
     }
-    return await res.json();
-  } catch (error) {
-    return user_data;
-  }
-};
-const dashboard = async () => {
-  const userData = await get_data();
-  const username = userData.username;
-  const upload = userData.user_upload_total;
+  };
+
+  fetchData();
+}, []);
+
+const { username, user_upload_total } = data;
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <User_sidebar />
@@ -91,7 +89,7 @@ const dashboard = async () => {
                   <p>Uploads Total</p>
                 </div>
                 <div className="w-full h-[30%] text-2xl flex justify-center items-center">
-                  <p>{upload}</p>
+                  <p>{user_upload_total}</p>
                 </div>
                 <div className="w-full h-[20%]"></div>
               </span>
@@ -153,4 +151,4 @@ const dashboard = async () => {
     </div>
   );
 };
-export default dashboard;
+export default Dashboard;

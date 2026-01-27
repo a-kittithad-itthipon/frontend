@@ -10,13 +10,13 @@ const geistSans = Geist({
 const kanitSans = Kanit({
   variable: "--font-kanit",
   subsets: ["latin", "thai"],
-  weight: ["200","300","400","500","600","700","800","900"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 const promptSans = Prompt({
   variable: "--font-prompt",
   subsets: ["latin", "thai"],
-  weight: ["200","300","400","500","600","700","800","900"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 const geistMono = Geist_Mono({
@@ -31,15 +31,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
-        <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+        />
       </head>
-      <body className={`${kanitSans.variable} ${promptSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${kanitSans.variable} ${promptSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {children}
       </body>
     </html>

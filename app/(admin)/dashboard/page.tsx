@@ -1,6 +1,7 @@
+"use client";
+
 import Sidebar from "@/app/components/sidebar";
 import Getsystemlist from "@/app/components/system_dashboard";
-import { cookies } from "next/headers";
 import {
   ArrowUpRight,
   ArrowUpToLine,
@@ -11,47 +12,39 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const default_data = {
+const Dashboard =  () => {
+
+const [data, setData] = useState({
   username: "Loading...",
   user_total: 0,
   upload_total: 0,
   req_total: 0,
-};
-async function get_data() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token");
+});
 
-  if (!token) {
-    return default_data;
-  }
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/api/dashboard");
+      
+      if (!res.ok) {
+        console.error("fetch Error");
+      }
 
-  try {
-    const res = await fetch("http://localhost:5000/api/dashboard", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-    });
+      const data = await res.json();
+      setData(data);
 
-    if (!res.ok) {
-      return default_data;
+    } catch (error) {
+      console.error(error);
     }
-    console.log(res);
-    return await res.json();
-  } catch (error) {
-    console.log("Error:", error);
-    return default_data;
-  }
-}
-const dashboard = async () => {
-  const data = await get_data();
-  const userName = data.username;
-  const upLoad = data.upload_total;
-  const users = data.user_total;
-  const req_total = data.req_total;
+  };
+
+  fetchData();
+}, []);
+
+const { username, user_total, upload_total, req_total } = data;
+
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <Sidebar />
@@ -65,7 +58,7 @@ const dashboard = async () => {
               </div>
               <div className="flex items-center justify-end gap-3 text-xl text-gray-800 font-[600]">
                 <IdCard size={35} />{" "}
-                <div className="max-w-[250px]">{userName}</div>
+                <div className="max-w-[250px]">{username}</div>
               </div>
             </div>
             <div className="w-full h-[85%] flex justify-center items-start overflow-y-auto custom-scroll border rounded-3xl">
@@ -96,7 +89,7 @@ const dashboard = async () => {
                   <p>Users <span className="text-sm">( Req : {req_total} )</span></p>
                 </div>
                 <div className="w-full h-[30%] text-2xl flex justify-center items-center flex-col gap-2">
-                  <p>{users}</p>
+                  <p>{user_total}</p>
                 </div>
                 <div className="w-full h-[20%]"></div>
               </span>
@@ -111,7 +104,7 @@ const dashboard = async () => {
                   <p>Uploads Total</p>
                 </div>
                 <div className="w-full h-[30%] text-2xl flex justify-center items-center">
-                  <p>{upLoad}</p>
+                  <p>{upload_total}</p>
                 </div>
                 <div className="w-full h-[20%]"></div>
               </span>
@@ -158,4 +151,4 @@ const dashboard = async () => {
     </div>
   );
 };
-export default dashboard;
+export default Dashboard;

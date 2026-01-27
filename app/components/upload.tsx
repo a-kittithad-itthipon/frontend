@@ -155,6 +155,10 @@ export default function Upload() {
         setmsg("Domain Name : End  ' . ' not allowed");
         return;
       }
+      if (value == "addp.site"){
+        setmsg("Domain Name : Domain name addp.site not allowed");
+        return;
+      }
     }
     setmsg("");
     setalertmsg(false);
