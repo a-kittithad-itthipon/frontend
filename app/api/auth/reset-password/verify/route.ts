@@ -7,46 +7,56 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const requestToken = cookieStore.get("request_token")?.value;
+    let response: Response;
 
-    const flaskRes = await fetch(
-      `${process.env.FLASK_API_URL}/api/auth/reset-password/verify`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${requestToken}`,
-          "Content-Type": "application/json",
+    try {
+      response = await fetch(
+        `${process.env.FLASK_API_URL}/api/auth/reset-password/verify`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${cookieStore.get("request_token")?.value}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            otp_code: body.otp,
+          }),
         },
-        body: JSON.stringify({
-          otp_code: body.otp,
-        }),
-      },
-    );
-
-    const result = await flaskRes.json();
-
-    if (!flaskRes.ok) {
+      );
+    } catch {
       return NextResponse.json(
-        { message: result.message },
-        { status: flaskRes.status },
+        { message: "Service unavailable" },
+        { status: 503 },
       );
     }
 
+    const result = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: result.message },
+        { status: response.status },
+      );
+    }
+
+    // delete old token
     cookieStore.delete("request_token");
 
+    // add new token
     cookieStore.set("verify_token", result.data.verify_token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
+      sameSite: "strict",
+      path: "/reset-password/new",
+      maxAge: 5 * 60, // 5 minutes
     });
 
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json(result, { status: response.status });
   } catch (error) {
-    console.error(error);
+    console.error("Unexpected error:", error);
+
     return NextResponse.json(
-      { message: "Backend connection error" },
-      { status: 502 },
+      { message: "Internal server error" },
+      { status: 500 },
     );
   }
 }

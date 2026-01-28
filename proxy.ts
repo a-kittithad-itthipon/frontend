@@ -24,7 +24,7 @@ export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const accessToken = req.cookies.get("access_token")?.value;
-  const passwordResetToken = req.cookies.get("request_token")?.value;
+  const requestToken = req.cookies.get("request_token")?.value;
   const verifyToken = req.cookies.get("verify_token")?.value;
 
   /* --------------------------------------------------
@@ -40,25 +40,17 @@ export async function proxy(req: NextRequest) {
   }
 
   /* --------------------------------------------------
-   * Forced password reset (step 1: verify)
+   * Forced password reset flow
    * -------------------------------------------------- */
-  if (passwordResetToken) {
-    if (pathname === "/reset-password/verify") {
-      return NextResponse.next();
-    }
 
-    return NextResponse.redirect(new URL("/reset-password/verify", req.url));
+  // 1. If trying to reach /verify without a requestToken
+  if (pathname === "/reset-password/verify" && !requestToken) {
+    return NextResponse.redirect(new URL("/reset-password/request", req.url));
   }
 
-  /* --------------------------------------------------
-   * Forced password reset (step 2: set new password)
-   -------------------------------------------------- */
-  if (verifyToken) {
-    if (pathname === "/reset-password/new") {
-      return NextResponse.next();
-    }
-
-    return NextResponse.redirect(new URL("/reset-password/new", req.url));
+  // 2. If trying to reach /new without a verifyToken
+  if (pathname === "/reset-password/new" && !verifyToken) {
+    return NextResponse.redirect(new URL("/reset-password/request", req.url));
   }
 
   /* --------------------------------------------------

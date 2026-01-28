@@ -5,10 +5,10 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    let flaskRes: Response;
+    let response: Response;
 
     try {
-      flaskRes = await fetch(
+      response = await fetch(
         `${process.env.FLASK_API_URL}/api/auth/reset-password/request`,
         {
           method: "POST",
@@ -17,42 +17,33 @@ export async function POST(req: Request) {
         },
       );
     } catch {
-      // Flask server is offline / timeout / DNS error
+      // server is offline / timeout / DNS error
       return NextResponse.json(
         { message: "Service unavailable" },
         { status: 503 },
       );
     }
 
-    let response: any = null;
+    const result = await response.json();
 
-    try {
-      response = await flaskRes.json();
-    } catch {
-      return NextResponse.json(
-        { message: "Invalid response from backend server" },
-        { status: 502 },
-      );
-    }
-
-    if (!flaskRes.ok) {
+    if (!response.ok) {
       // Forward backend error cleanly
       return NextResponse.json(
-        { message: response?.message },
-        { status: flaskRes.status },
+        { message: result?.message },
+        { status: response.status },
       );
     }
 
-    // set cookie
+    // set new cookie
     const cookieStore = await cookies();
-    cookieStore.set("request_token", response.data.request_token, {
+    cookieStore.set("request_token", result.data?.request_token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
+      sameSite: "strict",
+      path: "/reset-password/verify",
+      maxAge: 5 * 60, // 5 minutes
     });
 
-    return NextResponse.json(response, { status: flaskRes.status });
+    return NextResponse.json(result, { status: response.status });
   } catch (error) {
     console.error("Unexpected error:", error);
 

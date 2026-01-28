@@ -237,11 +237,11 @@ export function RegisterForm() {
                   <div className="flex items-center gap-2">
                     <FieldLabel>Create Database</FieldLabel>
                     <DynamicTooltip
-                      className="w-40 text-center"
+                      className="w-64 text-center"
                       title="Create Database"
                     >
-                      สร้าง Account สำหรับใช้เข้าสู่ระบบ Dozzle โดยใช้
-                      Username/Password (หากใช้ Log Monitor)
+                      สร้างบัญชีเพื่อใช้จัดการฐานข้อมูล โดยใช้ phpMyAdmin
+                      (หากมีการใช้งานฐานข้อมูล)
                     </DynamicTooltip>
                   </div>
                 </Field>

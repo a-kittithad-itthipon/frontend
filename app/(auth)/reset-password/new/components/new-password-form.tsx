@@ -15,6 +15,17 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { ApiAlertMsg } from "@/components/api-alert-msg";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Key, CheckCircle2, Circle } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const FormSchema = z.object({
   password: z
@@ -46,7 +57,7 @@ export function NewPasswordForm() {
     },
   });
 
-  async function handleSubmit(values: z.infer<typeof FormSchema>) {
+  async function handleResetPassword(values: z.infer<typeof FormSchema>) {
     setIsSubmitting(true);
     form.clearErrors("root");
 
@@ -88,10 +99,90 @@ export function NewPasswordForm() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Create new password</CardTitle>
-        <CardDescription></CardDescription>
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <Key className="h-6 w-6 text-primary" />
+        </div>
+
+        <CardTitle className="text-2xl">Set new password</CardTitle>
+
+        <CardDescription>
+          Create a strong password with a mix of letters, numbers and symbols
+        </CardDescription>
+
         <ApiAlertMsg form={form} />
       </CardHeader>
+      <CardContent>
+        <form
+          id="new-password"
+          onSubmit={form.handleSubmit(handleResetPassword)}
+        >
+          <FieldGroup>
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    aria-invalid={fieldState.invalid}
+                  >
+                    Password
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    type="password"
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    disabled={isSubmitting}
+                  />
+
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="cPassword"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    aria-invalid={fieldState.invalid}
+                  >
+                    Confrim password
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    type="password"
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    disabled={isSubmitting}
+                  />
+
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field>
+          <Button
+            type="submit"
+            form="new-password"
+            className="cursor-pointer"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <Spinner /> : "Submit"}
+          </Button>
+        </Field>
+      </CardFooter>
     </Card>
   );
 }

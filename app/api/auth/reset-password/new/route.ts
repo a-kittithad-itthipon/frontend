@@ -10,15 +10,17 @@ export async function POST(req: Request) {
     let response: Response;
 
     try {
-      response = await fetch(`${process.env.FLASK_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      response = await fetch(
+        `${process.env.FLASK_API_URL}/api/auth/reset-password/new`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${cookieStore.get("verify_token")?.value}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ password: body.password }),
         },
-        body: JSON.stringify(body),
-        // optional but very useful
-        signal: AbortSignal.timeout(5000),
-      });
+      );
     } catch {
       return NextResponse.json(
         { message: "Service unavailable" },
@@ -28,20 +30,11 @@ export async function POST(req: Request) {
 
     const result = await response.json();
 
-    if (!result.ok) {
-      // Forward backend error cleanly
+    if (!response.ok)
       return NextResponse.json(
-        { message: result?.message },
+        { message: result.message },
         { status: response.status },
       );
-    }
-
-    cookieStore.set("access_token", result.data.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-    });
 
     return NextResponse.json(result, { status: response.status });
   } catch (error) {

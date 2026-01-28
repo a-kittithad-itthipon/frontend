@@ -104,7 +104,6 @@ export function RequestResetForm() {
                   id={field.name}
                   disabled={isSubmitting}
                   aria-invalid={fieldState.invalid}
-                  placeholder="your.username"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -122,14 +121,7 @@ export function RequestResetForm() {
           disabled={isSubmitting}
           className="w-full cursor-pointer"
         >
-          {isSubmitting ? (
-            <>
-              <Spinner className="mr-2 h-4 w-4" />
-              Sending code…
-            </>
-          ) : (
-            "Send reset code"
-          )}
+          {isSubmitting ? <Spinner /> : "Send reset code"}
         </Button>
 
         <FieldDescription className="flex items-center justify-center text-sm">
