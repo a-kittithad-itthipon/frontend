@@ -88,7 +88,7 @@ export function LoginForm() {
 
         <CardTitle className="text-2xl">Sign in to your account</CardTitle>
 
-        <ErrorMessage form={form} />
+        <ErrorMessage message={form.formState.errors.root?.message} />
       </CardHeader>
 
       <CardContent>
@@ -126,7 +126,7 @@ export function LoginForm() {
                       <FieldLabel htmlFor={field.name}>Password</FieldLabel>
 
                       <Link
-                        href="/reset-password/request"
+                        href="/reset-password"
                         className="ml-auto text-sm text-primary underline-offset-4 hover:underline"
                       >
                         Forgot your password?

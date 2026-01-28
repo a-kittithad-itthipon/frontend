@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, ArrowLeft } from "lucide-react";
+import { Mail } from "lucide-react";
 
 import {
   Card,
@@ -33,7 +33,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function RequestResetForm() {
+export function ResetPasswordForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,7 +49,7 @@ export function RequestResetForm() {
     form.clearErrors("root");
 
     try {
-      const response = await fetch("/api/auth/reset-password/request", {
+      const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -88,7 +88,7 @@ export function RequestResetForm() {
           Enter your username and we’ll send a one-time code to your email.
         </CardDescription>
 
-        <ErrorMessage form={form} />
+        <ErrorMessage message={form.formState.errors.root?.message} />
       </CardHeader>
 
       <CardContent>

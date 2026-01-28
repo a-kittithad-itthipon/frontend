@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 
-import { LoginForm } from "./components/login-form";
+import { ConfirmForm } from "./components/confirm-form";
 
 export const metadata: Metadata = {
-  title: "Sign in to your account",
+  title: "Set new password",
 };
 
-export default function LoginPage() {
+export default function NewPage() {
   return (
     <div className="w-full max-w-md">
-      <LoginForm />
+      <ConfirmForm />
     </div>
   );
 }

@@ -37,7 +37,7 @@ const FormSchema = z.object({
   otp: z.string().length(6, "OTP is required"),
 });
 
-export function VerifyOtpForm() {
+export function VerifyForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -70,7 +70,7 @@ export function VerifyOtpForm() {
       }
 
       form.reset();
-      router.push("/reset-password/new");
+      router.push("/reset-password/confirm");
     } catch (error) {
       console.error(error);
       form.setError("root", {
@@ -89,7 +89,7 @@ export function VerifyOtpForm() {
         </div>
         <CardTitle className="text-2xl">Enter verification code</CardTitle>
         <CardDescription>We sent a 6-digit code to your email.</CardDescription>
-        <ErrorMessage form={form} />
+        <ErrorMessage message={form.formState.errors.root?.message} />
       </CardHeader>
       <CardContent>
         <form id="otp" onSubmit={form.handleSubmit(handleVerify)}>

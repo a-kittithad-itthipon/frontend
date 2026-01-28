@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { systemStats } from "@/constants/dashboard";
+import { SYSTEM_STATS } from "@/constants/dashboard";
 import { ExternalLink } from "lucide-react";
 
 export function SystemStatus() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {systemStats.map((item) => {
+      {SYSTEM_STATS.map((item) => {
         const Icon = item.icon;
 
         // ───────────────── System Health Card ─────────────────

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
     const result = await response.json();
 
-    if (!result.ok) {
+    if (!response.ok) {
       // Forward backend error cleanly
       return NextResponse.json(
         { message: result?.message },
@@ -38,12 +38,15 @@ export async function POST(req: Request) {
 
     cookieStore.set("access_token", result.data.access_token, {
       httpOnly: true,
-      secure: true,
       sameSite: "lax",
       path: "/",
+      maxAge: 10 * 60, // 10 minutes
     });
 
-    return NextResponse.json(result, { status: response.status });
+    return NextResponse.json(
+      { message: result.message },
+      { status: response.status },
+    );
   } catch (error) {
     console.error("Unexpected error:", error);
 

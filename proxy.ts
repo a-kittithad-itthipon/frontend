@@ -45,12 +45,12 @@ export async function proxy(req: NextRequest) {
 
   // 1. If trying to reach /verify without a requestToken
   if (pathname === "/reset-password/verify" && !requestToken) {
-    return NextResponse.redirect(new URL("/reset-password/request", req.url));
+    return NextResponse.redirect(new URL("/reset-password", req.url));
   }
 
   // 2. If trying to reach /new without a verifyToken
-  if (pathname === "/reset-password/new" && !verifyToken) {
-    return NextResponse.redirect(new URL("/reset-password/request", req.url));
+  if (pathname === "/reset-password/confirm" && !verifyToken) {
+    return NextResponse.redirect(new URL("/reset-password", req.url));
   }
 
   /* --------------------------------------------------

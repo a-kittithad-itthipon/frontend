@@ -4,14 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/sidebar";
-import { LucideIcon } from "lucide-react";
-
-export type SidebarItem = {
-  type: "item";
-  label: string;
-  href: string;
-  icon?: LucideIcon;
-};
+import { SidebarItem } from "@/types/sidebar";
 
 type AppSidebarItemProps = {
   item: SidebarItem;

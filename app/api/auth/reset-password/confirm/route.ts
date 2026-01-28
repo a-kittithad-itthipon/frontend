@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const cookieStore = await cookies();
+
   try {
     const body = await req.json();
 
@@ -9,15 +11,17 @@ export async function POST(req: Request) {
 
     try {
       response = await fetch(
-        `${process.env.FLASK_API_URL}/api/auth/reset-password/request`,
+        `${process.env.FLASK_API_URL}/api/auth/reset-password/confirm`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: body.username }),
+          headers: {
+            Authorization: `Bearer ${cookieStore.get("verify_token")?.value}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ password: body.cPassword }),
         },
       );
     } catch {
-      // server is offline / timeout / DNS error
       return NextResponse.json(
         { message: "Service unavailable" },
         { status: 503 },
@@ -26,24 +30,16 @@ export async function POST(req: Request) {
 
     const result = await response.json();
 
-    if (!response.ok) {
-      // Forward backend error cleanly
+    if (!response.ok)
       return NextResponse.json(
-        { message: result?.message },
+        { message: result.message },
         { status: response.status },
       );
-    }
 
-    // set new cookie
-    const cookieStore = await cookies();
-    cookieStore.set("request_token", result.data?.request_token, {
-      httpOnly: true,
-      sameSite: "strict",
-      path: "/reset-password/verify",
-      maxAge: 5 * 60, // 5 minutes
-    });
-
-    return NextResponse.json(result, { status: response.status });
+    return NextResponse.json(
+      { message: result.message },
+      { status: response.status },
+    );
   } catch (error) {
     console.error("Unexpected error:", error);
 

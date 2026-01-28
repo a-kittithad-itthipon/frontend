@@ -23,7 +23,7 @@ const SOCIAL_LINKS: SocialLink[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="bg-gray-800 text-white py-8 px-4 md:px-12 flex flex-col items-center gap-4">
+    <footer className="bg-muted text-muted-foreground py-8 px-4 md:px-12 flex flex-col items-center gap-4">
       {/* Social links */}
       <nav className="flex gap-6">
         {SOCIAL_LINKS.map(({ href, label, iconClass }) => (

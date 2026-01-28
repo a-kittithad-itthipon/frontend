@@ -20,7 +20,7 @@ export function SiteFilters({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-2xl font-semibold">Site Lists</h1>
+        <h1 className="text-2xl font-semibold">Sites status</h1>
         <p className="text-muted-foreground">
           Monitor and manage deployed systems
         </p>

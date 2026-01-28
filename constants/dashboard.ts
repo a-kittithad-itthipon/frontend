@@ -1,6 +1,6 @@
 import { Users, Upload, Activity, HeartPulse } from "lucide-react";
 
-export const systemStats = [
+export const SYSTEM_STATS = [
   {
     title: "Total Users",
     value: 1245,

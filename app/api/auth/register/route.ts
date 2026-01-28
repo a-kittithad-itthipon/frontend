@@ -4,9 +4,10 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const flaskRes = await fetch(
-      `${process.env.FLASK_API_URL}/api/auth/register`,
-      {
+    let response: Response;
+
+    try {
+      response = await fetch(`${process.env.FLASK_API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -15,12 +16,22 @@ export async function POST(req: Request) {
           email: body.email,
           create_db: body.database,
         }),
-      },
+      });
+    } catch (e) {
+      console.error(e);
+
+      return NextResponse.json(
+        { message: "Service unavailable" },
+        { status: 503 },
+      );
+    }
+
+    const result = await response.json();
+
+    return NextResponse.json(
+      { message: result.message },
+      { status: response.status },
     );
-
-    const data = await flaskRes.json();
-
-    return NextResponse.json(data, { status: flaskRes.status });
   } catch (error) {
     console.error("Unexpected error:", error);
 

@@ -114,7 +114,7 @@ export function RegisterForm() {
           Enter your information below to create your account
         </CardDescription>
 
-        <ErrorMessage form={form} />
+        <ErrorMessage message={form.formState.errors.root?.message} />
       </CardHeader>
 
       <CardContent>

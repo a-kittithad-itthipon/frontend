@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     try {
       response = await fetch(
-        `${process.env.FLASK_API_URL}/api/auth/reset-password/verify`,
+        `${process.env.FLASK_API_URL}/api/auth/reset-password/verify-otp`,
         {
           method: "POST",
           headers: {
@@ -45,12 +45,15 @@ export async function POST(req: Request) {
     // add new token
     cookieStore.set("verify_token", result.data.verify_token, {
       httpOnly: true,
-      sameSite: "strict",
-      path: "/reset-password/new",
+      sameSite: "lax",
+      path: "/",
       maxAge: 5 * 60, // 5 minutes
     });
 
-    return NextResponse.json(result, { status: response.status });
+    return NextResponse.json(
+      { message: result?.message },
+      { status: response.status },
+    );
   } catch (error) {
     console.error("Unexpected error:", error);
 

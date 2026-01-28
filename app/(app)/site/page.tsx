@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Site } from "./components/site";
 
 export const metadata: Metadata = {
-  title: "Active site",
+  title: "Sites",
 };
 
 export default function SitePage() {

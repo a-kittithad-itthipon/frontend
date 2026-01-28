@@ -14,15 +14,7 @@ import {
   SidebarMenuSub,
   useSidebar,
 } from "./ui/sidebar";
-import { SidebarItem } from "./app-sidebar-item";
-import { LucideIcon } from "lucide-react";
-
-type SidebarGroup = {
-  type: "group";
-  title: string;
-  icon?: LucideIcon;
-  children: SidebarItem[];
-};
+import { SidebarGroup } from "@/types/sidebar";
 
 type AppSidebarGroupProps = {
   group: SidebarGroup;

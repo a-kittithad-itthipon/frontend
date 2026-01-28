@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Key, CheckCircle2, Circle } from "lucide-react";
+import { Key } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
 const FormSchema = z.object({
@@ -44,7 +44,7 @@ const FormSchema = z.object({
     .regex(/[^a-zA-Z0-9]/, "Must contain at least one special character."),
 });
 
-export function NewPasswordForm() {
+export function ConfirmForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,13 +61,13 @@ export function NewPasswordForm() {
     setIsSubmitting(true);
     form.clearErrors("root");
 
-    // check password and confirm password
-    if (values.password !== values.cPassword) {
-      return form.setError("root", { message: "Passwords do not match" });
-    }
-
     try {
-      const response = await fetch("/api/auth/reset-password/new", {
+      // check password and confirm password
+      if (values.password !== values.cPassword) {
+        return form.setError("root", { message: "Passwords do not match" });
+      }
+
+      const response = await fetch("/api/auth/reset-password/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -109,7 +109,7 @@ export function NewPasswordForm() {
           Create a strong password with a mix of letters, numbers and symbols
         </CardDescription>
 
-        <ErrorMessage form={form} />
+        <ErrorMessage message={form.formState.errors.root?.message} />
       </CardHeader>
       <CardContent>
         <form

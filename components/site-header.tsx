@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet";
+} from "@/components/ui/sheet";
 import {
   Home,
   Contact,
@@ -22,6 +22,8 @@ import {
   Rocket,
   type LucideIcon,
 } from "lucide-react";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Separator } from "@/components/ui/separator";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Config                                   */
@@ -33,10 +35,10 @@ type NavItem = {
   icon: LucideIcon;
 };
 
-const navItems: NavItem[] = [
+const NAV_ITEMS: NavItem[] = [
   { title: "Home", href: "/", icon: Home },
   { title: "Contact", href: "/contact", icon: Contact },
-  { title: "Site Lists", href: "/site", icon: List },
+  { title: "Sites", href: "/site", icon: List },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -44,127 +46,59 @@ const navItems: NavItem[] = [
 /* -------------------------------------------------------------------------- */
 
 function NavLogo({
-  className,
   onClick,
+  className,
 }: {
-  className?: string;
   onClick?: () => void;
+  className?: string;
 }) {
   return (
     <Link
       href="/"
       onClick={onClick}
-      className="flex items-center gap-2 font-black"
+      className={cn(
+        "flex items-center gap-2 font-bold tracking-tight",
+        className,
+      )}
     >
-      <Rocket className="h-5 w-5" />
-      <span className={cn("text-xl truncate", className)}>Adocs</span>
+      <Rocket className="h-5 w-5 text-primary" />
+      <span className="text-lg">Adocs</span>
     </Link>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               Shared Nav Items                              */
+/*                                 Nav Links                                  */
 /* -------------------------------------------------------------------------- */
 
 function NavLinks({
-  onClick,
   vertical = false,
-  withActive = false,
+  onClick,
 }: {
-  onClick?: () => void;
   vertical?: boolean;
-  withActive?: boolean;
+  onClick?: () => void;
 }) {
   const pathname = usePathname();
 
   return (
-    <div className={cn("flex gap-1", vertical && "flex-col")}>
-      {navItems.map((item) => {
+    <nav className={cn("flex gap-1", vertical && "flex-col items-start")}>
+      {NAV_ITEMS.map((item) => {
         const isActive = pathname === item.href;
 
         return (
-          <div key={item.title} className="p-2">
-            <Link
-              href={item.href}
-              onClick={onClick}
-              className={cn(
-                "text-sm text-muted-foreground hover:text-primary",
-                isActive && "text-primary",
-              )}
-            >
+          <Button
+            key={item.title}
+            asChild
+            variant="ghost"
+            className={cn("w-full", isActive && "bg-muted text-foreground")}
+          >
+            <Link href={item.href} onClick={onClick}>
               {item.title}
             </Link>
-          </div>
+          </Button>
         );
       })}
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 Mobile Nav                                 */
-/* -------------------------------------------------------------------------- */
-
-function MobileNav() {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <div className="flex md:hidden items-center justify-between z-50 h-14 top-0 sticky border-b bg-background px-4">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" aria-label="Open menu">
-            <Menu />
-          </Button>
-        </SheetTrigger>
-
-        <SheetContent side="left" className="flex flex-col">
-          {/* Header */}
-          <SheetHeader>
-            <SheetTitle />
-            <div className="flex items-center justify-center">
-              <NavLogo
-                className="text-2xl"
-                onClick={() => setOpen(false)} // ✅ close on logo click
-              />
-            </div>
-            <SheetDescription />
-          </SheetHeader>
-
-          {/* Menu */}
-          <nav className="px-4">
-            <NavLinks vertical withActive onClick={() => setOpen(false)} />
-          </nav>
-        </SheetContent>
-      </Sheet>
-
-      <Button variant="outline" className="cursor-pointer" asChild>
-        <Link href="/login">Sign in</Link>
-      </Button>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                Desktop Nav                                 */
-/* -------------------------------------------------------------------------- */
-
-function DesktopNav() {
-  return (
-    <div className="hidden md:flex items-center justify-between px-8 z-50 h-14 top-0 border-b bg-background sticky">
-      <div className="flex items-center gap-6">
-        <NavLogo />
-        <NavLinks />
-      </div>
-
-      <div className="flex gap-2">
-        <Button variant="outline" asChild>
-          <Link href="/login">Sign in</Link>
-        </Button>
-        <Button asChild>
-          <Link href="/register">Sign up</Link>
-        </Button>
-      </div>
-    </div>
+    </nav>
   );
 }
 
@@ -173,10 +107,126 @@ function DesktopNav() {
 /* -------------------------------------------------------------------------- */
 
 export function SiteHeader() {
+  const pathname = usePathname();
+
   return (
-    <>
-      <MobileNav />
-      <DesktopNav />
-    </>
+    <header className="sticky top-0 z-50 w-full border-b bg-background">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 md:px-8">
+        {/* Left */}
+        <div className="flex items-center gap-6">
+          <NavLogo />
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex gap-0.5">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+
+              return (
+                <Button
+                  asChild
+                  key={item.title}
+                  variant="ghost"
+                  className={cn(isActive && "bg-muted text-foreground")}
+                >
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "text-muted-foreground",
+                      isActive && "text-primary",
+                    )}
+                  >
+                    {item.title}
+                  </Link>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right */}
+        <div className="flex items-center gap-2">
+          <ModeToggle variant="ghost" />
+
+          <Separator orientation="vertical" className="hidden md:block h-4" />
+
+          {/* Desktop auth */}
+          <div className="hidden md:flex items-center gap-2">
+            <Button variant="outline" asChild>
+              <Link href="/login">Sign in</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/register">Sign up</Link>
+            </Button>
+          </div>
+
+          {/* Mobile menu */}
+          <div className="md:hidden">
+            <MobileMenu />
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Mobile Menu                                 */
+/* -------------------------------------------------------------------------- */
+
+function MobileMenu() {
+  const [open, setOpen] = React.useState(false);
+  const pathname = usePathname();
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label="Open menu">
+          <Menu />
+        </Button>
+      </SheetTrigger>
+
+      <SheetContent side="left">
+        <SheetHeader>
+          <SheetTitle>
+            <NavLogo
+              className="justify-center"
+              onClick={() => setOpen(false)}
+            />
+          </SheetTitle>
+          <SheetDescription />
+        </SheetHeader>
+
+        <div className="h-full flex flex-col flex-1 gap-6 p-4">
+          <div className="grid gap-0.5">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+
+              return (
+                <Button asChild key={item.title} variant="ghost">
+                  <Link
+                    href={item.href}
+                    className={cn("justify-start", isActive && "bg-muted")}
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.title}
+                  </Link>
+                </Button>
+              );
+            })}
+          </div>
+
+          <div className="mt-auto">
+            <div className="flex flex-col gap-1">
+              <Button variant="outline" asChild>
+                <Link href="/login">Sign in</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/register">Sign up</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
