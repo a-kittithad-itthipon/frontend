@@ -83,21 +83,18 @@ function NavLinks({
         const isActive = pathname === item.href;
 
         return (
-          <Button
-            key={item.href}
-            variant="ghost"
-            asChild
-            onClick={onClick}
-            className={cn(
-              "justify-start gap-2",
-              withActive && isActive && "bg-accent text-accent-foreground",
-            )}
-          >
-            <Link href={item.href}>
-              {vertical && <item.icon className="h-4 w-4" />}
-              <span>{item.title}</span>
+          <div key={item.title} className="p-2">
+            <Link
+              href={item.href}
+              onClick={onClick}
+              className={cn(
+                "text-sm text-muted-foreground hover:text-primary",
+                isActive && "text-primary",
+              )}
+            >
+              {item.title}
             </Link>
-          </Button>
+          </div>
         );
       })}
     </div>
@@ -115,7 +112,7 @@ function MobileNav() {
     <div className="flex md:hidden items-center justify-between z-50 h-14 top-0 sticky border-b bg-background px-4">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" aria-label="Open menu">
+          <Button variant="ghost" size="icon" aria-label="Open menu">
             <Menu />
           </Button>
         </SheetTrigger>
@@ -139,8 +136,6 @@ function MobileNav() {
           </nav>
         </SheetContent>
       </Sheet>
-
-      <Rocket />
 
       <Button variant="outline" className="cursor-pointer" asChild>
         <Link href="/login">Sign in</Link>

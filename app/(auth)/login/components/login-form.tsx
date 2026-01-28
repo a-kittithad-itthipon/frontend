@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { Lock, ScanFace } from "lucide-react";
 
 import {
   Card,
@@ -55,27 +55,25 @@ export function LoginForm() {
     form.clearErrors("root");
 
     try {
-      const res = await fetch("/api/v1/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
+      const result = await response.json();
+
+      // if response is not ok display error message to client
+      if (!response.ok) {
         return form.setError("root", {
-          message:
-            data?.error?.message ?? "Something went wrong. Try again later",
+          message: result.message,
         });
       }
 
       router.replace("/login");
-    } catch (error) {
+    } catch {
       form.setError("root", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "Network error. Please try again.",
+        message: "Something went wrong. Please try again later.",
       });
     } finally {
       setIsSubmitting(false);
@@ -83,24 +81,19 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-sm">
-      <CardHeader className="space-y-2 text-center">
+    <Card>
+      <CardHeader className="text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-          <Lock className="h-6 w-6 text-primary" />
+          <ScanFace className="h-6 w-6 text-primary" />
         </div>
 
-        <CardTitle className="text-2xl">Welcome back</CardTitle>
-        <CardDescription>Sign in to your Adocs account</CardDescription>
+        <CardTitle className="text-2xl">Sign in to your account</CardTitle>
 
         <ApiAlertMsg form={form} />
       </CardHeader>
 
       <CardContent>
-        <form
-          id="login-form"
-          onSubmit={form.handleSubmit(handleLogin)}
-          className="space-y-6"
-        >
+        <form id="login-form" onSubmit={form.handleSubmit(handleLogin)}>
           <FieldGroup>
             {/* USERNAME */}
             <Controller
@@ -130,14 +123,14 @@ export function LoginForm() {
                 <div className="flex flex-col">
                   <Field data-invalid={fieldState.invalid}>
                     {/* Label + Forgot password on same line */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center">
                       <FieldLabel htmlFor={field.name}>Password</FieldLabel>
 
                       <Link
-                        href="/reset-password"
-                        className="text-sm text-primary hover:underline"
+                        href="/reset-password/request"
+                        className="ml-auto text-sm text-primary underline-offset-4 hover:underline"
                       >
-                        Forgot password?
+                        Forgot your password?
                       </Link>
                     </div>
 
@@ -159,22 +152,24 @@ export function LoginForm() {
         </form>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-4">
-        <Button
-          type="submit"
-          form="login-form"
-          className="w-full cursor-pointer"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <Spinner /> : "Log in"}
-        </Button>
+      <CardFooter>
+        <Field className="w-full">
+          <Button
+            type="submit"
+            form="login-form"
+            className="w-full cursor-pointer"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <Spinner /> : "Log in"}
+          </Button>
 
-        <FieldDescription className="text-center">
-          Don’t have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Create one
-          </Link>
-        </FieldDescription>
+          <FieldDescription className="text-center">
+            Don’t have an account?{" "}
+            <Link href="/register" className="text-primary hover:underline">
+              Create one
+            </Link>
+          </FieldDescription>
+        </Field>
       </CardFooter>
     </Card>
   );

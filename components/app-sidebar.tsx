@@ -32,7 +32,7 @@ export function AppSidebar({ role }: { role: "admin" | "user" }) {
   }
 
   return (
-    <Sidebar className="*:bg-background">
+    <Sidebar>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

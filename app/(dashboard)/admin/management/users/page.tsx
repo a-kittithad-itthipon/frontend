@@ -95,9 +95,12 @@ export default function UserManagementPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>No.</TableHead>
               <TableHead>User</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Containers</TableHead>
+              <TableHead>Database</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -105,17 +108,10 @@ export default function UserManagementPage() {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatar} />
-                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium">{user.name}</span>
-                </TableCell>
+                <TableCell></TableCell>
+                <TableCell className="font-medium">{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Badge variant="secondary">{user.role}</Badge>
-                </TableCell>
+                <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <Badge
                     variant={user.status === "Active" ? "default" : "outline"}
@@ -123,6 +119,7 @@ export default function UserManagementPage() {
                     {user.status}
                   </Badge>
                 </TableCell>
+                <TableCell></TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

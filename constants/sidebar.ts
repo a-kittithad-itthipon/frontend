@@ -1,4 +1,4 @@
-import { Briefcase, History, LayoutDashboard, User } from "lucide-react";
+import { Briefcase, History, LayoutDashboard } from "lucide-react";
 import { MenuItem } from "@/types/sidebar";
 
 export const sidebarMenu: Record<string, MenuItem[]> = {

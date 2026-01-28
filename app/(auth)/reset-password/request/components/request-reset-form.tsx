@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
@@ -35,7 +35,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function RequestResetForm() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,21 +46,20 @@ export function RequestResetForm() {
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
+    form.clearErrors("root");
 
     try {
-      const res = await fetch("/api/v1/auth/forgot-password", {
+      const response = await fetch("/api/auth/reset-password/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
-      const data = await res.json();
+      const result = await response.json();
 
-      if (!res.ok) {
+      if (!response.ok) {
         form.setError("root", {
-          message:
-            data?.error?.message ||
-            "We couldn’t process your request. Please try again.",
+          message: result.message,
         });
         return;
       }
@@ -69,10 +68,7 @@ export function RequestResetForm() {
       router.push("/reset-password/verify");
     } catch (err) {
       form.setError("root", {
-        message:
-          err instanceof Error
-            ? err.message
-            : "Unexpected error. Please try again.",
+        message: "Something went wrong. Please try again later.",
       });
     } finally {
       setIsSubmitting(false);
@@ -80,8 +76,8 @@ export function RequestResetForm() {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-md shadow-lg">
-      <CardHeader className="space-y-2 text-center">
+    <Card>
+      <CardHeader className="text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
           <Mail className="h-6 w-6 text-primary" />
         </div>
@@ -96,31 +92,20 @@ export function RequestResetForm() {
       </CardHeader>
 
       <CardContent>
-        <form
-          id="forgot-password"
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4"
-        >
+        <form id="forgot-password" onSubmit={form.handleSubmit(onSubmit)}>
           <Controller
             name="username"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Username</FieldLabel>
-
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-
-                  <Input
-                    {...field}
-                    id={field.name}
-                    disabled={isSubmitting}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="your.username"
-                    className="pl-9"
-                  />
-                </div>
-
+                <Input
+                  {...field}
+                  id={field.name}
+                  disabled={isSubmitting}
+                  aria-invalid={fieldState.invalid}
+                  placeholder="your.username"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -147,8 +132,7 @@ export function RequestResetForm() {
           )}
         </Button>
 
-        <FieldDescription className="flex items-center justify-center gap-1 text-sm">
-          <ArrowLeft className="h-4 w-4" />
+        <FieldDescription className="flex items-center justify-center text-sm">
           <Link href="/login" className="hover:underline text-muted-foreground">
             Back to sign in
           </Link>

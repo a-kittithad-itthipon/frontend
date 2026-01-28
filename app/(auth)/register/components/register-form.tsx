@@ -19,6 +19,7 @@ import {
   Field,
   FieldDescription,
   FieldError,
+  FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
@@ -27,11 +28,19 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DynamicTooltip } from "@/components/dynamic-tooltip";
 import { ApiAlertMsg } from "@/components/api-alert-msg";
+import { UserPlus } from "lucide-react";
 
 const registerSchema = z.object({
   username: z.string().min(1, "Username is required"),
   email: z.email("Invalid email address"),
   password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long.")
+    .regex(/[A-Z]/, "Must contain at least one uppercase letter.")
+    .regex(/[a-z]/, "Must contain at least one lowercase letter.")
+    .regex(/[0-9]/, "Must contain at least one number.")
+    .regex(/[^a-zA-Z0-9]/, "Must contain at least one special character."),
+  cPassword: z
     .string()
     .min(8, "Password must be at least 8 characters long.")
     .regex(/[A-Z]/, "Must contain at least one uppercase letter.")
@@ -49,10 +58,12 @@ export function RegisterForm() {
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
+    mode: "onChange",
     defaultValues: {
       username: "",
       email: "",
       password: "",
+      cPassword: "",
       database: false,
     },
   });
@@ -61,30 +72,31 @@ export function RegisterForm() {
     setIsSubmitting(true);
     form.clearErrors("root");
 
-    // Call API
+    if (values.password !== values.cPassword) {
+      return form.setError("root", { message: "Passwords do not match" });
+    }
+
     try {
-      const res = await fetch("/api/auth/register", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
+      const result = await response.json();
+      if (!response.ok) {
         return form.setError("root", {
-          message:
-            data.error?.message || "Something went wrong. Try again later.",
+          message: result.message,
         });
       }
 
       form.reset();
       router.push("/login");
-    } catch (error) {
+    } catch (e) {
+      console.error(e);
+
       form.setError("root", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong. Please try again later.",
+        message: "Something went wrong. Please try again later.",
       });
     } finally {
       setIsSubmitting(false);
@@ -93,112 +105,149 @@ export function RegisterForm() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription className="space-y-6">
-          <p>Enter your information below to create your account</p>
-          <ApiAlertMsg form={form} />
+      <CardHeader className="text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <UserPlus className="h-6 w-6 text-primary" />
+        </div>
+        <CardTitle className="text-2xl">Create your account</CardTitle>
+        <CardDescription>
+          Enter your information below to create your account
         </CardDescription>
+
+        <ApiAlertMsg form={form} />
       </CardHeader>
 
       <CardContent>
         <form
           id="register-form"
           onSubmit={form.handleSubmit(handleSubmitRegister)}
-          className="space-y-6"
         >
-          {/* Username */}
-          <Controller
-            name="username"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor={field.name}
-                  aria-invalid={fieldState.invalid}
-                >
-                  Username
-                </FieldLabel>
-                <Input
-                  {...field}
-                  disabled={isSubmitting}
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          {/* Email */}
-          <Controller
-            name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor={field.name}
-                  aria-invalid={fieldState.invalid}
-                >
-                  Email
-                </FieldLabel>
-                <Input
-                  {...field}
-                  disabled={isSubmitting}
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          {/* Password */}
-          <Controller
-            name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor={field.name}
-                  aria-invalid={fieldState.invalid}
-                >
-                  Password
-                </FieldLabel>
-                <Input
-                  {...field}
-                  type="password"
-                  aria-invalid={fieldState.invalid}
-                  disabled={isSubmitting}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          {/* Create database */}
-          <Controller
-            name="database"
-            control={form.control}
-            render={({ field }) => (
-              <Field orientation="horizontal">
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  disabled={isSubmitting}
-                  className="cursor-pointer"
-                />
-                <div className="flex items-center gap-2">
-                  <FieldLabel>Create Database</FieldLabel>
-                  <DynamicTooltip
-                    className="w-40 text-center"
-                    title="Create Database"
+          <FieldGroup>
+            {/* Username */}
+            <Controller
+              name="username"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    aria-invalid={fieldState.invalid}
                   >
-                    สร้าง Account สำหรับใช้เข้าสู่ระบบ Dozzle โดยใช้
-                    Username/Password (หากใช้ Log Monitor)
-                  </DynamicTooltip>
-                </div>
-              </Field>
-            )}
-          />
+                    Username
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Email */}
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    aria-invalid={fieldState.invalid}
+                  >
+                    Email
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Password */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel
+                      htmlFor={field.name}
+                      aria-invalid={fieldState.invalid}
+                    >
+                      Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      type="password"
+                      aria-invalid={fieldState.invalid}
+                      disabled={isSubmitting}
+                    />
+                    {fieldState.error && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="cPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel
+                      htmlFor={field.name}
+                      aria-invalid={fieldState.invalid}
+                    >
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      type="password"
+                      aria-invalid={fieldState.invalid}
+                      disabled={isSubmitting}
+                    />
+                    {fieldState.error && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </div>
+
+            {/* Create database */}
+            <Controller
+              name="database"
+              control={form.control}
+              render={({ field }) => (
+                <Field orientation="horizontal">
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
+                    className="cursor-pointer"
+                  />
+                  <div className="flex items-center gap-2">
+                    <FieldLabel>Create Database</FieldLabel>
+                    <DynamicTooltip
+                      className="w-40 text-center"
+                      title="Create Database"
+                    >
+                      สร้าง Account สำหรับใช้เข้าสู่ระบบ Dozzle โดยใช้
+                      Username/Password (หากใช้ Log Monitor)
+                    </DynamicTooltip>
+                  </div>
+                </Field>
+              )}
+            />
+          </FieldGroup>
         </form>
       </CardContent>
 
@@ -210,7 +259,7 @@ export function RegisterForm() {
             className="cursor-pointer"
             disabled={isSubmitting}
           >
-            {isSubmitting ? <Spinner /> : "Submit"}
+            {isSubmitting ? <Spinner /> : "Create Account"}
           </Button>
 
           <FieldDescription className="text-center">

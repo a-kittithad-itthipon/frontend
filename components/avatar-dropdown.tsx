@@ -29,11 +29,13 @@ export function AvatarDropdown() {
   async function handleLogout() {
     const res = await fetch("/api/auth/logout", {
       method: "POST",
-      headers: { "Content-Tyep": "application/json" },
+      headers: { "Content-Type": "application/json" },
     });
 
     // Cancel operation if failed
-    if (!res.ok) return;
+    if (!res.ok) {
+      throw new Error("Operation is not successful");
+    }
 
     // After finish then redirect to login page
     router.push("/login");

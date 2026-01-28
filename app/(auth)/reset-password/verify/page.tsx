@@ -2,7 +2,7 @@ import { VerifyOtpForm } from "./components/verify-otp-form";
 
 export default function VerifyPage() {
   return (
-    <div className="w-full max-w-md">
+    <div className="flex flex-col w-full max-w-sm">
       <VerifyOtpForm />
     </div>
   );

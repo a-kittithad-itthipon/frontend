@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 /* --------------------------------------------------
@@ -7,49 +7,54 @@ import { jwtVerify } from "jose";
 const PUBLIC_PREFIXES = ["/contact", "/site"];
 const AUTH_ROUTES = ["/login", "/register", "/reset-password"];
 
-const ROLE_DASHBOARD: Record<string, string> = {
+const ROLE_DASHBOARD = {
   admin: "/admin/dashboard",
   user: "/user/dashboard",
-};
+} as const;
 
 /* --------------------------------------------------
- * JWT config
+ * JWT config (Edge-safe)
  * -------------------------------------------------- */
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 /* --------------------------------------------------
- * Proxy (Middleware)
+ * Middleware (Next.js 15+ proxy)
  * -------------------------------------------------- */
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const sessionToken = req.cookies.get("session_token")?.value;
-  const passwordResetToken = req.cookies.get("password_reset_token")?.value;
+  const accessToken = req.cookies.get("access_token")?.value;
+  const passwordResetToken = req.cookies.get("request_token")?.value;
   const verifyToken = req.cookies.get("verify_token")?.value;
 
   /* --------------------------------------------------
-   * Public routes
+   * Allow public routes
    * -------------------------------------------------- */
-  if (pathname === "/" || PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
+  const isPublic =
+    pathname === "/" ||
+    pathname === "/forbidden" ||
+    PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+
+  if (isPublic) {
     return NextResponse.next();
   }
 
   /* --------------------------------------------------
-   * Forced password reset flow
+   * Forced password reset (step 1: verify)
    * -------------------------------------------------- */
   if (passwordResetToken) {
-    if (
-      pathname === "/reset-password/verify" ||
-      AUTH_ROUTES.includes(pathname)
-    ) {
+    if (pathname === "/reset-password/verify") {
       return NextResponse.next();
     }
 
     return NextResponse.redirect(new URL("/reset-password/verify", req.url));
   }
 
+  /* --------------------------------------------------
+   * Forced password reset (step 2: set new password)
+   -------------------------------------------------- */
   if (verifyToken) {
-    if (pathname === "/reset-password/new" || AUTH_ROUTES.includes(pathname)) {
+    if (pathname === "/reset-password/new") {
       return NextResponse.next();
     }
 
@@ -59,54 +64,62 @@ export async function proxy(req: NextRequest) {
   /* --------------------------------------------------
    * Unauthenticated users
    * -------------------------------------------------- */
-  if (!sessionToken) {
-    if (!AUTH_ROUTES.includes(pathname)) {
+  if (!accessToken) {
+    const isAuthRoute = AUTH_ROUTES.some(
+      (r) => pathname === r || pathname.startsWith(`${r}/`),
+    );
+
+    if (!isAuthRoute) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
     return NextResponse.next();
   }
 
   /* --------------------------------------------------
    * Verify JWT & extract role
    * -------------------------------------------------- */
-  let role: "admin" | "user";
+  let role: keyof typeof ROLE_DASHBOARD;
 
   try {
-    const { payload } = await jwtVerify(sessionToken, JWT_SECRET);
+    const { payload } = await jwtVerify(accessToken, JWT_SECRET);
 
     const rawRole = String(payload.role).toLowerCase();
 
-    if (rawRole !== "admin" && rawRole !== "user") {
+    if (!(rawRole in ROLE_DASHBOARD)) {
       throw new Error("Invalid role");
     }
 
-    role = rawRole;
+    role = rawRole as keyof typeof ROLE_DASHBOARD;
   } catch {
     const res = NextResponse.redirect(new URL("/login", req.url));
-    res.cookies.delete("session_token");
+    res.cookies.delete("access_token");
     return res;
+  }
+
+  /* --------------------------------------------------
+   * Base dashboard redirect (role-based)
+   * -------------------------------------------------- */
+  if (pathname === "/login") {
+    return NextResponse.redirect(new URL(ROLE_DASHBOARD[role], req.url));
   }
 
   /* --------------------------------------------------
    * Prevent logged-in users from auth pages
    * -------------------------------------------------- */
-  if (AUTH_ROUTES.includes(pathname)) {
+  if (AUTH_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))) {
     return NextResponse.redirect(new URL(ROLE_DASHBOARD[role], req.url));
   }
 
   /* --------------------------------------------------
    * Role-based access control
    * -------------------------------------------------- */
-  if (pathname.startsWith("/admin")) {
-    if (role !== "admin") {
-      return NextResponse.redirect(new URL("/forbidden", req.url));
-    }
+  if (pathname.startsWith("/admin") && role !== "admin") {
+    return NextResponse.redirect(new URL("/forbidden", req.url));
   }
 
-  if (pathname.startsWith("/user")) {
-    if (role !== "user") {
-      return NextResponse.redirect(new URL("/forbidden", req.url));
-    }
+  if (pathname.startsWith("/user") && role !== "user") {
+    return NextResponse.redirect(new URL("/forbidden", req.url));
   }
 
   return NextResponse.next();
@@ -116,5 +129,5 @@ export async function proxy(req: NextRequest) {
  * Matcher
  * -------------------------------------------------- */
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|img).*)"],
 };
