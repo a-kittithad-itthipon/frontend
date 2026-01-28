@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebarItem } from "./app-sidebar-item";
 import { AppSidebarGroup } from "./app-sidebar-group";
+import { Rocket } from "lucide-react";
 
 import { sidebarMenu } from "@/constants/sidebar";
-import { Rocket } from "lucide-react";
 
 export function AppSidebar({ role }: { role: "admin" | "user" }) {
   const pathname = usePathname();

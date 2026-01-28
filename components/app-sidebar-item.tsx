@@ -1,15 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import type { MenuItem } from "@/types/sidebar";
 import { cn } from "@/lib/utils";
 
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/sidebar";
+import { LucideIcon } from "lucide-react";
 
-type ItemType = Extract<MenuItem, { type: "item" }>;
+export type SidebarItem = {
+  type: "item";
+  label: string;
+  href: string;
+  icon?: LucideIcon;
+};
 
 type AppSidebarItemProps = {
-  item: ItemType;
+  item: SidebarItem;
   pathname: string;
 };
 

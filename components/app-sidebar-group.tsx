@@ -14,13 +14,18 @@ import {
   SidebarMenuSub,
   useSidebar,
 } from "./ui/sidebar";
+import { SidebarItem } from "./app-sidebar-item";
+import { LucideIcon } from "lucide-react";
 
-import type { MenuItem } from "@/types/sidebar";
-
-type GroupItem = Extract<MenuItem, { type: "group" }>;
+type SidebarGroup = {
+  type: "group";
+  title: string;
+  icon?: LucideIcon;
+  children: SidebarItem[];
+};
 
 type AppSidebarGroupProps = {
-  group: GroupItem;
+  group: SidebarGroup;
   pathname: string;
 };
 
