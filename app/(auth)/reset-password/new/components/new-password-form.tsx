@@ -14,7 +14,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { ApiAlertMsg } from "@/components/api-alert-msg";
+import { ErrorMessage } from "@/components/error-message";
 import {
   Field,
   FieldDescription,
@@ -109,7 +109,7 @@ export function NewPasswordForm() {
           Create a strong password with a mix of letters, numbers and symbols
         </CardDescription>
 
-        <ApiAlertMsg form={form} />
+        <ErrorMessage form={form} />
       </CardHeader>
       <CardContent>
         <form

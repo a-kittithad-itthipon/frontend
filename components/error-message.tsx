@@ -2,7 +2,7 @@
 
 import { TriangleAlert } from "lucide-react";
 
-export function ApiAlertMsg({ form }: { form: any }) {
+export function ErrorMessage({ form }: { form: any }) {
   return (
     <>
       {form.formState.errors.root?.message && (

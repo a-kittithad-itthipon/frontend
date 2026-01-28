@@ -29,7 +29,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { ApiAlertMsg } from "@/components/api-alert-msg";
+import { ErrorMessage } from "@/components/error-message";
 import { RectangleEllipsis } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -89,7 +89,7 @@ export function VerifyOtpForm() {
         </div>
         <CardTitle className="text-2xl">Enter verification code</CardTitle>
         <CardDescription>We sent a 6-digit code to your email.</CardDescription>
-        <ApiAlertMsg form={form} />
+        <ErrorMessage form={form} />
       </CardHeader>
       <CardContent>
         <form id="otp" onSubmit={form.handleSubmit(handleVerify)}>

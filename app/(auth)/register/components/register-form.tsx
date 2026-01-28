@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DynamicTooltip } from "@/components/dynamic-tooltip";
-import { ApiAlertMsg } from "@/components/api-alert-msg";
+import { ErrorMessage } from "@/components/error-message";
 import { UserPlus } from "lucide-react";
 
 const registerSchema = z.object({
@@ -114,7 +114,7 @@ export function RegisterForm() {
           Enter your information below to create your account
         </CardDescription>
 
-        <ApiAlertMsg form={form} />
+        <ErrorMessage form={form} />
       </CardHeader>
 
       <CardContent>

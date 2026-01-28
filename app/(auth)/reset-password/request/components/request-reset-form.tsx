@@ -25,7 +25,7 @@ import {
   FieldError,
   FieldDescription,
 } from "@/components/ui/field";
-import { ApiAlertMsg } from "@/components/api-alert-msg";
+import { ErrorMessage } from "@/components/error-message";
 
 const formSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -88,7 +88,7 @@ export function RequestResetForm() {
           Enter your username and we’ll send a one-time code to your email.
         </CardDescription>
 
-        <ApiAlertMsg form={form} />
+        <ErrorMessage form={form} />
       </CardHeader>
 
       <CardContent>

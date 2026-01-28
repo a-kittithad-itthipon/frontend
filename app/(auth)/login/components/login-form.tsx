@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
-import { Lock, ScanFace } from "lucide-react";
+import { ScanFace } from "lucide-react";
 
 import {
   Card,
@@ -14,7 +14,6 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
-  CardDescription,
 } from "@/components/ui/card";
 import {
   Field,
@@ -26,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ApiAlertMsg } from "@/components/api-alert-msg";
+import { ErrorMessage } from "@/components/error-message";
 
 const formSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -89,7 +88,7 @@ export function LoginForm() {
 
         <CardTitle className="text-2xl">Sign in to your account</CardTitle>
 
-        <ApiAlertMsg form={form} />
+        <ErrorMessage form={form} />
       </CardHeader>
 
       <CardContent>
