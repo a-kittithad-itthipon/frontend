@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Rocket, Key, User } from "lucide-react";
+import ThemeToggle from "./mode";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,7 +14,7 @@ export default function Navbar() {
       : "cursor-pointer flex justify-center items-center hover:text-sky-600 transition-all duration-200";
 
   return (
-    <nav className="h-[90px] w-full sticky z-50 top-0 left-0 flex justify-center items-center border-b border-gray-100 bg-white">
+    <nav className="h-[90px] w-full sticky z-50 top-0 left-0 flex justify-center items-center border-b border-gray-100 bg-white dark:bg-gray-900">
       <div className="flex justify-between items-center h-full w-[75%] mt-3 py-3">
         <div className="flex justify-start items-center flex-1">
           <Link
@@ -30,11 +31,19 @@ export default function Navbar() {
           <Link href="/" className={isActive("/")}>
             Home
           </Link>
+          <a
+            href="https://docs.addp.site"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer flex justify-center items-center hover:text-sky-600 transition-all duration-200"
+          >
+            Document
+          </a>
           <Link href="/contact" className={isActive("/contact")}>
-            Contact Us
+            About
           </Link>
           <Link href="/system-list" className={isActive("/system-list")}>
-            System List
+            Containers
           </Link>
         </div>
         <div className="flex justify-end items-center gap-5 flex-1 text-medium font-medium text-white">

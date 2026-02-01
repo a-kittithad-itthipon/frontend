@@ -56,6 +56,12 @@ body {
 .bg-img-logo{
   background-image: url(/img/w08.jpg);
 }
+.bg-img-us{
+  background-image: url(/img/w11.png);
+}
+.bg-img-a{
+  background-image: url(/img/a.jpg);
+}
 .custom-scroll::-webkit-scrollbar {
   display: none;
 }

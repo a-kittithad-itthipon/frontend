@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Rocket, User, X } from "lucide-react";
+import { icons, Pencil, Rocket, User, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export default function UserTable() {
@@ -16,6 +16,7 @@ export default function UserTable() {
   const [containerName, setContainername] = useState("");
   const [type, set_type] = useState("");
   const [stack, setStack] = useState("");
+  const [open_icon, setOpenicon] = useState(false);
 
   function userData(params: any) {
     if (params) {
@@ -24,6 +25,10 @@ export default function UserTable() {
       setContainername(params.container_name);
       set_type("");
       setStack(params.project_path);
+      setPort(params.port);
+      setDomain(params.domain);
+      set_type(params.forward_scheme);
+      setOpenicon(params.publish);
     } else {
       setIsOpen(false);
       setData(null);
@@ -56,51 +61,6 @@ export default function UserTable() {
     setmsg("");
     setPort(value);
   };
-  const check_domain = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    const allowed = "abcdefghijklmnopqrstuvwxyz0123456789-.";
-
-    if (value.includes(" ")) {
-      setmsg("Domain : Space not allowed");
-      return;
-    }
-    if (value !== value.toLowerCase()) {
-      setmsg("Domain : UpperCase  not allowed");
-      return;
-    }
-    if (value.length > 25) {
-      setmsg("Domain : Maximum length is 25 characters");
-      return;
-    }
-    for (const ch of value) {
-      console.log(ch);
-      console.log(value);
-      if (!allowed.includes(ch)) {
-        setmsg("Domain Name : Special characters not allowed");
-        return;
-      }
-      if (
-        value.includes("--") ||
-        value.includes("..") ||
-        value.includes("-.") ||
-        value.includes(".-")
-      ) {
-        setmsg("Domain Name : Double  ' -- ' or ' .. ' not allowed");
-        return;
-      }
-      if (value.startsWith("-") || value.startsWith(".")) {
-        setmsg("Domain Name : First  ' - ' or ' . ' not allowed");
-        return;
-      }
-      if (value.endsWith(".")) {
-        setmsg("Domain Name : End  ' . ' not allowed");
-        return;
-      }
-    }
-    setmsg("");
-    setDomain(value);
-  };
-
   useEffect(() => {
     const fetchContainermanage = async () => {
       try {
@@ -127,10 +87,11 @@ export default function UserTable() {
 
   const port_Update = async (e: React.FormEvent) => {
     e.preventDefault();
+    const pub = open_icon;
     const res = await fetch("/api/port_update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ port, containerName, type }),
+      body: JSON.stringify({ port, containerName, type, pub }),
     });
 
     const data = await res.json();
@@ -149,6 +110,7 @@ export default function UserTable() {
 
   const del_stack = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const res = await fetch("/api/del_stack", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -166,6 +128,9 @@ export default function UserTable() {
       userData(null);
     }, 200);
   };
+  const change_icon = (e: React.MouseEvent<HTMLElement>) => {
+    setOpenicon(!open_icon);
+  };
 
   return (
     <main className="flex flex-12 h-full justify-center items-center relative">
@@ -175,9 +140,10 @@ export default function UserTable() {
             <thead className="bg-gray-800 sticky top-0 z-10">
               <tr className="h-[70px] text-lg text-center text-white">
                 <th className="w-[10%]">No.</th>
-                <th className="w-[15%]">Protocol</th>
-                <th className="w-[25%]">Domain</th>
-                <th className="w-[15%]">Port</th>
+                <th className="w-[10%]">Protocol</th>
+                <th className="w-[20%]">Domain</th>
+                <th className="w-[10%]">Port</th>
+                <th className="w-[15%]">Publish</th>
                 <th className="w-[25%]">Project Path</th>
                 <th className="w-[10%]">Edit</th>
               </tr>
@@ -195,6 +161,9 @@ export default function UserTable() {
                   <td className="max-w-[80px] truncate">{container.domain}</td>
                   <td className="max-w-[80px] truncate">
                     {container.port_internal}
+                  </td>
+                  <td className="max-w-[80px] truncate">
+                    {container.publish ? "Yes" : "No"}
                   </td>
                   <td className="max-w-[80px] truncate">
                     {container.project_path}
@@ -237,14 +206,17 @@ export default function UserTable() {
                 {msg}
               </span>
             </div>
-            <div className="w-full px-5 gap-3 h-[15%] flex justify-start items-center text-xl font-[600]">
-              <Rocket size={40} /> <span>{data.container_name}</span>
+            <div className="w-full px-5 gap-3 h-[10%] flex justify-start items-center text-xl font-[600]">
+              <Rocket size={40} />
+              <span className="truncate max-w-[320px] border text-lg">
+                {domain}
+              </span>
             </div>
             {!del && (
               <form
                 action="#"
                 method="post"
-                className="w-full px-5 h-[55%] bg-white flex flex-col justify-start gap-2"
+                className="w-full px-5 h-[65%] bg-white flex flex-col justify-start gap-2"
                 id="editForm"
                 onSubmit={port_Update}
               >
@@ -267,19 +239,6 @@ export default function UserTable() {
                 </div>
                 <div className="flex justify-center items-start flex-col gap-3 mt-5">
                   <label className="block text-sm font-bold text-[18px]">
-                    Domain Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full py-2 border px-3 outline-none rounded-lg cursor-not-allowed bg-gray-100"
-                    value={data.domain}
-                    onChange={check_domain}
-                    readOnly
-                    placeholder="Enter Domain"
-                  />
-                </div>
-                <div className="flex justify-center items-start flex-col gap-3 mt-5">
-                  <label className="block text-sm font-bold text-[18px]">
                     Port
                   </label>
                   <input
@@ -291,10 +250,23 @@ export default function UserTable() {
                     placeholder="Enter port app (1 - 65535)"
                   />
                 </div>
+                <div className="flex justify-between items-start gap-3 mt-5">
+                  <label className="block text-sm font-bold text-[18px]">
+                    Publish
+                  </label>
+                  <i
+                    className={
+                      open_icon
+                        ? "bx bxs-toggle-right text-5xl cursor-pointer text-green-600 transition duration-300"
+                        : "bx bxs-toggle-left text-5xl cursor-pointer text-gray-500 transition duration-300"
+                    }
+                    onClick={change_icon}
+                  ></i>
+                </div>
               </form>
             )}
             {del && (
-              <div className="w-full px-5 h-[55%] bg-white flex flex-col justify-start gap-2">
+              <div className="w-full px-5 h-[5%] bg-white flex flex-col justify-start gap-2">
                 <div className="w-[90%] h-full text-lg felx text-center mt-8">
                   Are you sure you want to delete all containers in this stack ?
                 </div>

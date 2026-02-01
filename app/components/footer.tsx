@@ -10,7 +10,7 @@ export default function Footer() {
         </a>
       </div>
       <span className="text-white text-xs font-[300] text-center w-full">
-        © 2025 Adocs Deployment Paltform.
+        © 2025 Adocs Deployment Platform.
       </span>
       <span className="text-white text-xs font-[300] text-center w-full">
         Built with Docker & Next.js & Flask.

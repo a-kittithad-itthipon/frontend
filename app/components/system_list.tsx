@@ -90,7 +90,7 @@ export default function SystemList() {
                     <td>
                       <div className="flex justify-center items-center group gap-1">
                         <a
-                          href="#"
+                          href={`https://${value.domain}`}
                           className="text-sky-700 hover:text-sky-900"
                           target="_blank"
                           rel="noopener noreferrer"

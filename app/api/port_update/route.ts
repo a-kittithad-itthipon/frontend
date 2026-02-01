@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
-    const { port, containerName, type } = await req.json();
+    const { port, containerName, type, pub } = await req.json();
     const cookieStore = await cookies();
     const token = cookieStore.get("token");
 
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token.value}`,
       },
-      body: JSON.stringify({ port, containerName, type }),
+      body: JSON.stringify({ port, containerName, type, pub }),
     });
     // console.log(flaskRes);
     const data = await flaskRes.json();

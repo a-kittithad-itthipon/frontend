@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
+import { Spade } from "lucide-react";
 const contact = () => {
   const [subject, setsubject] = useState("");
   const [content, setcontent] = useState("");
@@ -15,7 +16,13 @@ const contact = () => {
     setcontent(content);
   };
   const email = "adocs.deploy@gmail.com";
-  let send =   "https://mail.google.com/mail/?view=cm&fs=1&to="+email+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(content);
+  let send =
+    "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+    email +
+    "&su=" +
+    encodeURIComponent(subject) +
+    "&body=" +
+    encodeURIComponent(content);
   console.log(send);
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -70,6 +77,92 @@ const contact = () => {
               </div>
             </div>
             <div className="w-[55%] h-full bg-img-logo bg-cover bg-start"></div>
+          </div>
+        </div>
+      </main>
+      <main className="h-[100vh] w-full flex justify-center items-center flex-col">
+        <div className="w-[75%] h-[90%] flex justify-between items-center rounded-4xl mt-7 overflow-hidden">
+          <div className="w-[30%] h-[65%] flex flex-col justify-start items-center rounded-3xl border">
+            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8">
+              <img src="/img/n.jpg" alt="A" />
+            </div>
+            <div className="h-[25%] w-full flex justify-center gap-3 items-center flex-col">
+              <div className="text-2xl font-[600]">Natthawut Ploenprom</div>
+              <div className="text-lg">nat65.pwk@gmail.com</div>
+            </div>
+            <div className="h-[25%] w-full flex justify-center gap-10 items-center">
+              <a
+                href="https://www.facebook.com/natthawut.ploenprom.2025"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-facebook-circle text-4xl hover:text-sky-600 transition duration"></i>
+              </a>
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=nat65.pwk@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-gmail text-4xl hover:text-red-600 transition duration"></i>
+              </a>
+            </div>
+          </div>
+          <div className="w-[30%] h-[65%] flex flex-col justify-start items-center rounded-3xl border">
+            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8">
+              <img src="/img/a.jpg" alt="A" />
+            </div>
+            <div className="h-[25%] w-full flex justify-center gap-3 items-center flex-col">
+              <div className="text-2xl font-[600]">Kittithad Ittipon</div>
+              <div className="text-lg">a.kittithad.ittipon@gmail.com</div>
+            </div>
+            <div className="h-[25%] w-full flex justify-center gap-10 items-center">
+              <a
+                href="https://www.facebook.com/a.kittihad"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-facebook-circle text-4xl hover:text-sky-600 transition duration"></i>
+              </a>
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=a.kittithad.ittipon@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-gmail text-4xl hover:text-red-600 transition duration"></i>
+              </a>
+              <a
+                href="https://github.com/a-kittithad-itthipon"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-github  text-4xl hover:text-gray-500 transition duration"></i>
+              </a>
+            </div>
+          </div>
+          <div className="w-[30%] h-[65%] flex flex-col justify-start items-center rounded-3xl border">
+            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8">
+              <img src="/img/d.jpg" alt="A" />
+            </div>
+            <div className="h-[25%] w-full flex justify-center gap-3 items-center flex-col">
+              <div className="text-2xl font-[600]">Netnapha Wijitkhajee</div>
+              <div className="text-lg">netnaphawijit4@gmail.com</div>
+            </div>
+            <div className="h-[25%] w-full flex justify-center gap-10 items-center">
+              <a
+                href="https://www.facebook.com/netnapha.wijitkhajee"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-facebook-circle text-4xl hover:text-sky-600 transition duration"></i>
+              </a>
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=netnaphawijit4@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bx bxl-gmail text-4xl hover:text-red-600 transition duration"></i>
+              </a>
+            </div>
           </div>
         </div>
       </main>

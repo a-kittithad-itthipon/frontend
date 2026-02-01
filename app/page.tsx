@@ -79,56 +79,56 @@ const Index = () => {
         <div className="grid grid-cols-3 gap-10 w-[55%] h-[75%] justify-center items-center">
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            href="/deploy/1"
+            href="https://docs.addp.site/docs/html"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
               <i className="bx bxl-html5 text-5xl"></i>
-              <p>HTML</p>
+              <p className="text-2xl">HTML</p>
             </span>
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            href="/deploy/2"
+            href="https://docs.addp.site/docs/python/flask"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
               <i className="bx bxl-python text-5xl"></i>
-              <p>Python</p>
+              <p className="text-2xl">Python</p>
             </span>
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            href="/deploy/3"
+            href="https://docs.addp.site/docs/nodejs/express"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
               <i className="bx bxl-nodejs text-5xl"></i>
-              <p>Node.js</p>
+              <p className="text-2xl">Node.js</p>
             </span>
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            href="/deploy/4"
+            href="https://docs.addp.site/docs/php/php"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
               <i className="bx bxl-php text-5xl"></i>
-              <p>PHP</p>
+              <p className="text-2xl">PHP</p>
             </span>
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            href="/deploy/5"
+            href="https://docs.addp.site/docs/mysql"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
               <i className="bx bxs-data text-5xl"></i>
-              <p>Database</p>
+              <p className="text-2xl">Database</p>
             </span>
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            href="/deploy/6"
+            href="https://docs.addp.site/docs/docker-engine/introduction"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
               <i className="bx bxs-cog text-5xl"></i>
-              <p>Maintenance</p>
+              <p className="text-2xl">Maintenance</p>
             </span>
           </a>
         </div>
