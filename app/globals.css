@@ -60,8 +60,15 @@ body {
   background-image: url(/img/w11.png);
 }
 .bg-img-a{
-  background-image: url(/img/a.jpg);
+  background-image: url(/img/a_2.jpg);
 }
+.bg-img-n{
+  background-image: url(/img/n.jpg);
+}
+.bg-img-d{
+  background-image: url(/img/d.jpg);
+}
+
 .custom-scroll::-webkit-scrollbar {
   display: none;
 }

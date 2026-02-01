@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Rocket, Key, User } from "lucide-react";
-import ThemeToggle from "./mode";
 
 export default function Navbar() {
   const pathname = usePathname();

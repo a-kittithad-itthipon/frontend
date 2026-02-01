@@ -79,6 +79,8 @@ const Index = () => {
         <div className="grid grid-cols-3 gap-10 w-[55%] h-[75%] justify-center items-center">
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
+            rel="noopener noreferrer"
+            target="_blank"
             href="https://docs.addp.site/docs/html"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
@@ -88,6 +90,8 @@ const Index = () => {
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
+            rel="noopener noreferrer"
+            target="_blank"
             href="https://docs.addp.site/docs/python/flask"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
@@ -97,6 +101,8 @@ const Index = () => {
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
+            rel="noopener noreferrer"
+            target="_blank"
             href="https://docs.addp.site/docs/nodejs/express"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
@@ -106,6 +112,8 @@ const Index = () => {
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
+            rel="noopener noreferrer"
+            target="_blank"
             href="https://docs.addp.site/docs/php/php"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
@@ -115,6 +123,8 @@ const Index = () => {
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
+            rel="noopener noreferrer"
+            target="_blank"
             href="https://docs.addp.site/docs/mysql"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
@@ -124,6 +134,8 @@ const Index = () => {
           </a>
           <a
             className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
+            rel="noopener noreferrer"
+            target="_blank"
             href="https://docs.addp.site/docs/docker-engine/introduction"
           >
             <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
