@@ -8,7 +8,7 @@ const Index = () => {
     <div className="w-full min-h-screen flex flex-col">
       <Navbar />
       <main className="h-[calc(100vh-90px)] w-full flex justify-start items-center flex-col">
-        <div className="w-[75%] h-[75%] flex justify-start items-center rounded-4xl shadow-lg mt-7 overflow-hidden shadow-gray-100">
+        <div className="w-[75%] h-[75%] flex justify-start items-center rounded-4xl shadow-lg mt-7 overflow-hidden shadow-gray-100 md:w-full">
           <div className="w-full h-full flex bg-img bg-cover bg-center">
             <div className="w-[45%] h-full bg-gray-900/50 rounded-3xl">
               <div className="w-full h-full">
@@ -27,7 +27,7 @@ const Index = () => {
                 </div>
                 <div className="w-full flex justify-start items-center">
                   <a
-                    href="https://docs.local"
+                    href="https://docs.addp.site"
                     className="w-full"
                     target="_blank"
                     rel="noopener noreferrer"

@@ -26,7 +26,7 @@ export default function Navbar() {
             <span className="text-2xl font-bold">Adocs</span>
           </Link>
         </div>
-        <div className="flex justify-center items-center gap-15 text-lg font-bold flex-2 ">
+        <div className="flex justify-center items-center gap-15 text-lg font-bold flex-2">
           <Link href="/" className={isActive("/")}>
             Home
           </Link>
