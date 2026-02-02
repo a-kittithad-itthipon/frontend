@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
@@ -83,8 +84,8 @@ const contact = () => {
       <main className="h-[100vh] w-full flex justify-center items-center flex-col">
         <div className="w-[75%] h-[90%] flex justify-between items-center rounded-4xl mt-7 overflow-hidden">
           <div className="w-[30%] h-[65%] flex flex-col justify-start items-center rounded-3xl border">
-            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8">
-              <img src="/img/n.jpg" alt="A" />
+            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8 relative">
+              <Image src="/img/n.jpg" alt="n" fill className="object-cover" />
             </div>
             <div className="h-[25%] w-full flex justify-center gap-3 items-center flex-col">
               <div className="text-xl font-[600]">Natthawut Ploenprom</div>
@@ -108,8 +109,8 @@ const contact = () => {
             </div>
           </div>
           <div className="w-[30%] h-[65%] flex flex-col justify-start items-center rounded-3xl border">
-            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8">
-              <img src="/img/a_2.jpg" alt="A" />
+            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8 relative">
+              <Image src="/img/a_2.jpg" alt="A" fill className="object-cover" />
             </div>
             <div className="h-[25%] w-full flex justify-center gap-3 items-center flex-col">
               <div className="text-xl font-[600]">Kittithad Ittipon</div>
@@ -140,8 +141,8 @@ const contact = () => {
             </div>
           </div>
           <div className="w-[30%] h-[65%] flex flex-col justify-start items-center rounded-3xl border">
-            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8">
-              <img src="/img/d.jpg" alt="A" />
+            <div className="w-[220px] h-[220px] overflow-hidden rounded-full flex justify-center items-center mb-5 mt-8 relative">
+              <Image src="/img/d.jpg" alt="d" fill className="object-cover" />
             </div>
             <div className="h-[25%] w-full flex justify-center gap-3 items-center flex-col">
               <div className="text-xl font-[600]">Netnapha Wijitkhajee</div>

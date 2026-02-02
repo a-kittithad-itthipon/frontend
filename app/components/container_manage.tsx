@@ -25,7 +25,7 @@ export default function UserTable() {
       setContainername(params.container_name);
       set_type("");
       setStack(params.project_path);
-      setPort(params.port);
+      setPort(params.port_internal);
       setDomain(params.domain);
       set_type(params.forward_scheme);
       setOpenicon(params.publish);
@@ -208,7 +208,7 @@ export default function UserTable() {
             </div>
             <div className="w-full px-5 gap-3 h-[10%] flex justify-start items-center text-xl font-[600]">
               <Rocket size={40} />
-              <span className="truncate max-w-[320px] border text-lg">
+              <span className="truncate max-w-[320px] text-lg">
                 {domain}
               </span>
             </div>
