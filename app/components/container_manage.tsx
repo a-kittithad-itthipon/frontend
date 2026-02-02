@@ -266,8 +266,8 @@ export default function UserTable() {
               </form>
             )}
             {del && (
-              <div className="w-full px-5 h-[5%] bg-white flex flex-col justify-start gap-2">
-                <div className="w-[90%] h-full text-lg felx text-center mt-8">
+              <div className="w-full px-5 h-[65%] bg-white flex flex-col justify-start gap-2">
+                <div className="w-[90%] h-full text-lg flex text-center mt-8">
                   Are you sure you want to delete all containers in this stack ?
                 </div>
               </div>

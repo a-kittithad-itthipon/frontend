@@ -8,19 +8,19 @@ const Index = () => {
     <div className="w-full min-h-screen flex flex-col">
       <Navbar />
       <main className="h-[calc(100vh-90px)] w-full flex justify-start items-center flex-col">
-        <div className="w-[75%] h-[75%] flex justify-start items-center rounded-4xl shadow-lg mt-7 overflow-hidden shadow-gray-100 md:w-full">
-          <div className="w-full h-full flex bg-img bg-cover bg-center">
-            <div className="w-[45%] h-full bg-gray-900/50 rounded-3xl">
+        <div className="lg:w-[75%] w-full lg:h-[75%] h-auto flex justify-start items-center lg:rounded-4xl shadow-lg lg:mt-7 overflow-hidden shadow-gray-100 ">
+          <div className="w-full h-full flex bg-img bg-cover md:bg-center">
+            <div className="lg:w-[45%] h-full bg-gray-900/50 lg:rounded-3xl">
               <div className="w-full h-full">
                 <div className="w-[70%] h-[35%]">
-                  <h1 className="text-white text-7xl font-[900] mt-10 ml-10 leading-tight">
-                    <span className="text-white">Learn </span> <br />
-                    <span className="text-white">Build </span> <br />
-                    <span className="text-white">Deploy </span>
+                  <h1 className="text-white lg:text-7xl text-5xl font-[900] mt-10 ml-10 leading-tight">
+                    <span className="text-white">Learn</span> <br />
+                    <span className="text-white">Build</span> <br />
+                    <span className="text-white">Deploy</span>
                   </h1>
                 </div>
                 <div className="w-[90%] h-[10%]">
-                  <h1 className="text-white text-md font-[400] mt-20 ml-10">
+                  <h1 className="text-white text-sm md:text-md font-[400] mt-20 ml-10">
                     Manage containers, launch environments, and deploy websites
                     through a user-friendly platform designed for developers.
                   </h1>
@@ -32,7 +32,7 @@ const Index = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <button className="group cursor-pointer mt-5 ml-10 py-3 text-white rounded-full text-4xl font-[700] hover:text-cyan-400 transition-all duration-200 flex justify-center items-center">
+                    <button className="group cursor-pointer mt-5 ml-10 py-3 text-white rounded-full text-2xl md:text-4xl font-[700] hover:text-cyan-400 transition-all duration-200 flex justify-center items-center">
                       Get Started{" "}
                       <ArrowUpRight
                         size={35}
