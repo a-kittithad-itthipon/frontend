@@ -21,6 +21,8 @@ const [data, setData] = useState({
   user_total: 0,
   upload_total: 0,
   req_total: 0,
+  max_containers: 0,
+  container_used: 0,
 });
 
 useEffect(() => {
@@ -30,8 +32,16 @@ useEffect(() => {
       
       if (!res.ok) {
         console.error("fetch Error");
+        setData({
+          username: "Loading...",
+          user_total: 0,
+          upload_total: 0,
+          req_total: 0,
+          max_containers: 0,
+          container_used: 0,
+        });
+        return
       }
-
       const data = await res.json();
       setData(data);
 
@@ -42,8 +52,8 @@ useEffect(() => {
 
   fetchData();
 }, []);
-
-const { username, user_total, upload_total, req_total } = data;
+  
+const { username, user_total, upload_total, req_total, max_containers, container_used } = data;
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -57,8 +67,8 @@ const { username, user_total, upload_total, req_total } = data;
                 <p>My System and Container</p>
               </div>
               <div className="flex items-center justify-end gap-3 text-xl text-gray-800 font-[600]">
-                <IdCard size={35} />{" "}
-                <div className="max-w-[250px]">{username}</div>
+                <IdCard size={35} />
+                <div className="max-w-[350px] truncate">{username}</div>
               </div>
             </div>
             <div className="w-full h-[85%] flex justify-center items-start overflow-y-auto custom-scroll border rounded-3xl">

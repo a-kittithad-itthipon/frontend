@@ -69,10 +69,11 @@ export default function SystemList() {
             <thead className="bg-gray-800 sticky top-0 z-10">
               <tr className="h-[70px] p-2 text-lg text-center text-white">
                 <th className="w-[10%]">No.</th>
-                <th className="w-[25%]">Container Name</th>
+                <th className="w-[20%]">Container Name</th>
                 <th className="w-[20%]">Domain</th>
-                <th className="w-[15%]">Type</th>
-                <th className="w-[20%]">Owner</th>
+                <th className="w-[10%]">Type</th>
+                <th className="w-[15%]">Owner</th>
+                <th className="w-[15%]">Updated Date</th>
                 <th className="w-[10%]">Status</th>
               </tr>
             </thead>
@@ -87,11 +88,11 @@ export default function SystemList() {
                     <td className="max-w-[250px] truncate">
                       {value.container_name}
                     </td>
-                    <td>
+                    <td className="">
                       <div className="flex justify-center items-center group gap-1">
                         <a
                           href={`https://${value.domain}`}
-                          className="text-sky-700 hover:text-sky-900"
+                          className="text-sky-700 hover:text-sky-900 truncate max-w-[200px]"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -103,8 +104,9 @@ export default function SystemList() {
                         />
                       </div>
                     </td>
-                    <td>{value.type}</td>
-                    <td>{value.owner}</td>
+                    <td className="max-w-[180px] truncate">{value.type}</td>
+                    <td className="max-w-[180px] truncate">{value.owner}</td>
+                    <td className="max-w-[200px] truncate">{value.updated_at}</td>
                     <td>
                       <div className="relative group text-green-600 font-medium flex justify-center items-center h-[65px] w-full group">
                         <i
@@ -126,12 +128,12 @@ export default function SystemList() {
                       </div>
                     </td>
                   </tr>
-                ) : null
+                ) : null,
               )}
               {filteredSystems.length === 0 && (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={7}
                     className="h-[65px] border-b hover:bg-gray-100 transition-all group"
                   >
                     No results found

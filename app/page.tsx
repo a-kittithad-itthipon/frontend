@@ -1,150 +1,86 @@
-import { ArrowUpRight, Key, Rocket, User } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 
 const Index = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <main className="h-[calc(100vh-90px)] w-full flex justify-start items-center flex-col">
-        <div className="lg:w-[75%] w-full lg:h-[75%] h-auto flex justify-start items-center lg:rounded-4xl shadow-lg lg:mt-7 overflow-hidden shadow-gray-100 ">
-          <div className="w-full h-full flex bg-img bg-cover md:bg-center">
-            <div className="lg:w-[45%] h-full bg-gray-900/50 lg:rounded-3xl">
-              <div className="w-full h-full">
-                <div className="w-[70%] h-[35%]">
-                  <h1 className="text-white lg:text-7xl text-5xl font-[900] mt-10 ml-10 leading-tight">
-                    <span className="text-white">Learn</span> <br />
-                    <span className="text-white">Build</span> <br />
-                    <span className="text-white">Deploy</span>
-                  </h1>
-                </div>
-                <div className="w-[90%] h-[10%]">
-                  <h1 className="text-white text-sm md:text-md font-[400] mt-20 ml-10">
-                    Manage containers, launch environments, and deploy websites
-                    through a user-friendly platform designed for developers.
-                  </h1>
-                </div>
-                <div className="w-full flex justify-start items-center">
-                  <a
-                    href="https://docs.addp.site"
-                    className="w-full"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button className="group cursor-pointer mt-5 ml-10 py-3 text-white rounded-full text-2xl md:text-4xl font-[700] hover:text-cyan-400 transition-all duration-200 flex justify-center items-center">
-                      Get Started{" "}
-                      <ArrowUpRight
-                        size={35}
-                        className="group transition-all duration-200"
-                      />
-                    </button>
-                  </a>
-                </div>
-              </div>
+
+      <main className="flex-1 flex flex-col">
+        {/* HERO */}
+        <section className="relative flex items-center">
+          {/* background */}
+          <div className="absolute inset-0 bg-img bg-cover bg-center" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-900/60 to-gray-900/80" />
+
+          {/* content */}
+          <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-12 py-28 flex flex-col gap-8">
+            <h1 className="text-white font-extrabold leading-[1.05] tracking-tight text-4xl sm:text-5xl lg:text-7xl">
+              Learn.
+              <br />
+              Build.
+              <br />
+              Deploy.
+            </h1>
+
+            <p className="text-white/90 text-sm sm:text-base lg:text-lg max-w-2xl">
+              Manage containers, launch environments, and deploy websites
+              through a clean, developer-friendly platform built for speed
+              and reliability.
+            </p>
+
+            <a
+              href="https://docs.addp.site"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 w-fit text-white font-semibold text-lg lg:text-2xl transition"
+            >
+              <span className="relative">
+                Get Started
+                <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-cyan-400 transition-all group-hover:w-full" />
+              </span>
+              <ArrowUpRight
+                size={28}
+                className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+              />
+            </a>
+          </div>
+        </section>
+
+        {/* CATEGORY */}
+        <section className="py-24">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <h2 className="text-center text-2xl lg:text-4xl font-bold tracking-tight mb-14">
+              Deploy Categories
+            </h2>
+
+            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+              {[
+                { name: "HTML", icon: "bxl-html5", link: "/docs/html" },
+                { name: "Python", icon: "bxl-python", link: "/docs/python/flask" },
+                { name: "Node.js", icon: "bxl-nodejs", link: "/docs/nodejs/express" },
+                { name: "PHP", icon: "bxl-php", link: "/docs/php/php" },
+                { name: "Database", icon: "bxs-data", link: "/docs/mysql" },
+                { name: "Maintenance", icon: "bxs-cog", link: "/docs/docker-engine/introduction" },
+              ].map((item) => (
+                <a
+                  key={item.name}
+                  href={`https://docs.addp.site${item.link}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-3xl border border-gray-200 bg-white p-10 flex flex-col items-center justify-center gap-4 text-gray-900 font-semibold transition
+                             hover:-translate-y-1 hover:shadow-xl hover:border-gray-300"
+                >
+                  <i className={`bx ${item.icon} text-5xl text-gray-700 transition group-hover:text-gray-900`} />
+                  <span className="text-lg tracking-wide">{item.name}</span>
+                </a>
+              ))}
             </div>
           </div>
-        </div>
-        <div className="w-[75%] h-[12%] bg-gray-100 shadow-gray-100 rounded-4xl p-3 flex justify-between items-center mt-7">
-          <div className="flex flex-col border-r-2 border-gray-300 flex-1 pl-6">
-            <span className="text-lg font-bold text-gray-900 flex justify-start items-center gap-2 flex-col">
-              <i className="bx bxs-window-alt text-2xl"></i>
-              <p>Local DNS</p>
-            </span>
-          </div>
-          <div className="flex flex-col border-r-2 border-gray-300 flex-1 pl-6">
-            <span className="text-lg font-bold text-gray-900 flex justify-start items-center gap-2 flex-col">
-              <i className="bx bxs-user text-2xl"></i>
-              <p>Users Management</p>
-            </span>
-          </div>
-          <div className="flex flex-col border-r-2 border-gray-300 flex-1 pl-6">
-            <span className="text-lg font-bold text-gray-900 flex justify-start items-center gap-2 flex-col">
-              <i className="bx bxs-rocket text-2xl"></i>
-              <p>Deployments</p>
-            </span>
-          </div>
-          <div className="flex flex-col flex-1 pl-6">
-            <span className="text-lg font-bold text-gray-900 flex justify-start items-center gap-2 flex-col">
-              <i className="bx bxl-docker text-3xl"></i>
-              <p>Docker Container</p>
-            </span>
-          </div>
-        </div>
+        </section>
       </main>
-      <main className="h-[100vh] w-full flex justify-start items-center flex-col">
-        <div className="w-full h-[15%] flex justify-center items-center text-3xl font-[700]">
-          <h1>Deploy Categories</h1>
-        </div>
-        <div className="grid grid-cols-3 gap-10 w-[55%] h-[75%] justify-center items-center">
-          <a
-            className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://docs.addp.site/docs/html"
-          >
-            <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
-              <i className="bx bxl-html5 text-5xl"></i>
-              <p className="text-2xl">HTML</p>
-            </span>
-          </a>
-          <a
-            className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://docs.addp.site/docs/python/flask"
-          >
-            <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
-              <i className="bx bxl-python text-5xl"></i>
-              <p className="text-2xl">Python</p>
-            </span>
-          </a>
-          <a
-            className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://docs.addp.site/docs/nodejs/express"
-          >
-            <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
-              <i className="bx bxl-nodejs text-5xl"></i>
-              <p className="text-2xl">Node.js</p>
-            </span>
-          </a>
-          <a
-            className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://docs.addp.site/docs/php/php"
-          >
-            <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
-              <i className="bx bxl-php text-5xl"></i>
-              <p className="text-2xl">PHP</p>
-            </span>
-          </a>
-          <a
-            className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://docs.addp.site/docs/mysql"
-          >
-            <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
-              <i className="bx bxs-data text-5xl"></i>
-              <p className="text-2xl">Database</p>
-            </span>
-          </a>
-          <a
-            className="w-[100%] h-[100%] bg-gray-100 rounded-3xl flex justify-center items-center cursor-pointer transition duration-200 shadow-gray-100 hover:bg-gray-700 hover:text-white"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://docs.addp.site/docs/docker-engine/introduction"
-          >
-            <span className="text-lg font-bold flex justify-center items-center flex-col gap-4">
-              <i className="bx bxs-cog text-5xl"></i>
-              <p className="text-2xl">Maintenance</p>
-            </span>
-          </a>
-        </div>
-      </main>
+
       <Footer />
     </div>
   );

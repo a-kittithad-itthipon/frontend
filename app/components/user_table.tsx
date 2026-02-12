@@ -37,7 +37,9 @@ export default function UserTable() {
   const [msg, setmsg] = useState("");
   const [username, setusername] = useState("");
   const [user_del, setdel_username] = useState("");
-  const [refresh, setrefresh] = useState(false);
+  const [refresh, setrefresh] = useState(0);
+  const [task_id, setTaskID]  = useState("");
+
   function userData(params: any) {
     if (params) {
       setData(params);
@@ -71,6 +73,43 @@ export default function UserTable() {
   const change_icon = (e: React.MouseEvent<HTMLElement>) => {
     setIcon(!icon);
   };
+
+  useEffect(() => {
+    if (!task_id) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/task", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ task_id: task_id }),
+        });
+        
+        const data = await res.json();
+        if (res.status === 200) {
+          setrefresh(Date.now()); 
+          setTaskID("");        
+          setmsg(data.message); 
+          setTimeout(() => {
+            setIsOpen(false);   
+            setmsg("");         
+          }, 500);
+        } 
+        else if (res.status >= 400) {
+          setmsg(data.error);
+          setTaskID("");       
+        }
+
+      } catch (error) {
+        console.error(error);
+        setTaskID("");
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
+
+  }, [task_id]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -112,7 +151,7 @@ export default function UserTable() {
       return;
     }
     setmsg(data.message);
-    setrefresh(!refresh);
+    setrefresh(Date.now());
     setTimeout(() => {
       setmsg("");
     }, 2000);
@@ -132,12 +171,14 @@ export default function UserTable() {
       }, 2000);
       return;
     }
-    setmsg(data.message);
-    setrefresh(!refresh);
-    setTimeout(() => {
-      setmsg("");
+
+    if (data.task_id) {
+      setTaskID(data.task_id);
       setIsOpen(false);
-    }, 50);
+      setmsg("Deleting user...");
+      return;
+    }
+    setrefresh(Date.now());
   };
   return (
     <main className="flex flex-12 h-full justify-center items-center relative">
@@ -162,7 +203,7 @@ export default function UserTable() {
                   className="h-[60px] border-b hover:bg-gray-100 transition-all"
                 >
                   <td>{index + 1}</td>
-                  <td className="max-w-[80px] truncate">{user.username}</td>
+                  <td className="max-w-[80px] truncate">{user.username} {user.status == null ?  "": <span className="text-red-500">  (Deleting)</span>}</td>
                   <td className="max-w-[80px] truncate">{user.email}</td>
                   <td className="max-w-[80px] truncate align-middle">
                     {user.role}
@@ -195,7 +236,7 @@ export default function UserTable() {
               <span className="h-[60%] flex justify-center items-end">
                 Edit User
               </span>
-              <span className="text-[16px] font-[400] text-gray-500 h-[40%]">
+              <span className="text-[16px] font-[400] text-gray-500 h-[40%] flex justify-center items-center overflow-hidden w-[90%]">
                 {msg}
               </span>
             </div>

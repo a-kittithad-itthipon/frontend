@@ -120,6 +120,7 @@ export default function RegisterForm() {
         setemail("");
         setpassword("");
       }, 800);
+      window.location.href = "/login";
     } catch (err) {
       setalert(false);
       setmsg("Server error");

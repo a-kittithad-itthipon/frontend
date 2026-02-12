@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { div } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 
 export default function Upload() {
   const [msg, setmsg] = useState("");
@@ -24,6 +24,7 @@ export default function Upload() {
   const [new_file, set_new_file] = useState(false);
   const [type, set_type] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter()
 
   const check_file = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.files?.[0];
@@ -155,6 +156,11 @@ export default function Upload() {
         setmsg("Domain Name : End  ' . ' not allowed");
         return;
       }
+      if (value.endsWith("-")) {
+        setmsg("Domain Name : End  ' - ' not allowed");
+        setalertmsg(true);
+        return;
+      }
       if (value == "addp.site"){
         setmsg("Domain Name : Domain name addp.site not allowed");
         return;
@@ -215,9 +221,7 @@ export default function Upload() {
     set_new_file(false);
     setmsg(data.message);
     setalertmsg(false);
-    setTimeout(() => {
-      setmsg("");
-    }, 3000);
+    router.push(`/users/dashboard?task_id=${data.task_id}`);
   };
   return (
     <main className="flex flex-12 h-full justify-center items-center">

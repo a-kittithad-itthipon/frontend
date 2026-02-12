@@ -1,8 +1,14 @@
 "use client";
 import { Cuboid, Rocket, ShieldUser, UserCog, Users, User, History } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function User_sidebar() {
+  const pathname = usePathname();
+  const isActive = (path: string) => {
+      return pathname === path ? "border-sky-600 text-sky-600 hover:text-sky-600 hover:bg-sky-50 " : "hover:bg-gray-800 hover:text-white";
+    }
+
   const logout = async () => {
     await fetch("/api/logout", { method: "POST" });
     console.log("LOGOUT");
@@ -21,7 +27,7 @@ export default function User_sidebar() {
         <span className="text-lg font-[400]">Home</span>
         <Link
           href="/users/dashboard"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/users/dashboard")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <i className="bx bxs-dashboard text-xl"></i> <span>Dashboard</span>
         </Link>
@@ -30,26 +36,26 @@ export default function User_sidebar() {
         <span className="text-lg font-[400]">Utilities</span>
         <Link
           href="/users/upload"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/users/upload")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <i className="bx bx-window-open text-xl"></i>{" "}
           <span>Upload Project</span>
         </Link>
         <Link
           href="/users/container-manage"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/users/container-manage")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <i className="bx bx-link-external text-xl"></i> <span>System</span>
         </Link>
         <Link
           href="/users/me"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/users/me")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <User /> <span>Profile</span>
         </Link>
         <Link
           href="/users/history"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/users/history")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <History /> <span>History</span>
         </Link>

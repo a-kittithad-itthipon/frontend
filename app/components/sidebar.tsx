@@ -1,4 +1,5 @@
 "use client";
+import { p } from "framer-motion/client";
 import {
   CircleUser,
   Cuboid,
@@ -9,9 +10,16 @@ import {
   History
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function Sidebar() {
+  
+  const pathname = usePathname();
+  const isActive = (path: string) => {
+    return pathname === path ? "border-sky-600 text-sky-600 hover:text-sky-600 hover:bg-sky-50 " : "hover:bg-gray-800 hover:text-white";
+  }
+
   const logout = async () => {
     await fetch("/api/logout", { method: "POST" });
     console.log("LOGOUT");
@@ -30,7 +38,7 @@ export default function Sidebar() {
         <span className="text-lg font-[400]">Home</span>
         <Link
           href="dashboard"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/dashboard")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <i className="bx bxs-dashboard text-xl"></i> <span>Dashboard</span>
         </Link>
@@ -39,21 +47,21 @@ export default function Sidebar() {
         <span className="text-lg font-[400]">Utilities</span>
         <Link
           href="/upload"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/upload")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <i className="bx bx-window-open text-xl"></i>{" "}
           <span>Upload Project</span>
         </Link>
         <Link
           href="/user_manage"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/user_manage")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           {" "}
           <UserCog /> <span>Users Manament</span>
         </Link>
         <Link
           href="/me"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/me")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           {" "}
           <User />
@@ -61,7 +69,7 @@ export default function Sidebar() {
         </Link>
         <Link
           href="/history"
-          className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
+          className={`${isActive("/history")} w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md transition duration-200 cursor-pointer`}
         >
           <History /> <span>History</span>
         </Link>

@@ -11,12 +11,14 @@ export default function UserTable() {
   const [msg, setmsg] = useState("");
   const [port, setPort] = useState("");
   const [domain, setDomain] = useState("");
-  const [refresh, setrefresh] = useState(false);
+  const [refresh, setrefresh] = useState(0);
+  const [task_id, setTaskID]  = useState("");
   const [del, setDel] = useState(false);
   const [containerName, setContainername] = useState("");
   const [type, set_type] = useState("");
   const [stack, setStack] = useState("");
   const [open_icon, setOpenicon] = useState(false);
+  const [status, setStatus] = useState("");
 
   function userData(params: any) {
     if (params) {
@@ -29,6 +31,7 @@ export default function UserTable() {
       setDomain(params.domain);
       set_type(params.forward_scheme);
       setOpenicon(params.publish);
+      setStatus(params.status);
     } else {
       setIsOpen(false);
       setData(null);
@@ -61,6 +64,44 @@ export default function UserTable() {
     setmsg("");
     setPort(value);
   };
+
+  useEffect(() => {
+      if (!task_id) return;
+  
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch("/api/task", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ task_id: task_id }),
+          });
+          
+          const data = await res.json();
+          if (res.status === 200) {
+            setrefresh(Date.now());
+            setTaskID("");        
+            setmsg(data.message); 
+            setTimeout(() => {
+              setIsOpen(false);       
+              setmsg("");          
+            }, 500);
+          } 
+          else if (res.status >= 400) {
+            setmsg(data.error);
+            setTaskID("");     
+          }
+
+  
+        } catch (error) {
+          console.error(error);
+          setTaskID("");
+        }
+      }, 500);
+  
+      return () => clearInterval(interval);
+  
+    }, [task_id]);
+
   useEffect(() => {
     const fetchContainermanage = async () => {
       try {
@@ -102,7 +143,7 @@ export default function UserTable() {
     }
 
     setmsg(data.message);
-    setrefresh(!refresh);
+    setrefresh(Date.now());
     setTimeout(() => {
       setmsg("");
     }, 200);
@@ -122,12 +163,36 @@ export default function UserTable() {
       return;
     }
     setmsg(data.message);
-    setrefresh(!refresh);
+    setrefresh(Date.now());
+    setTaskID(data.task_id);
     setTimeout(() => {
       setmsg("");
       userData(null);
     }, 200);
   };
+
+  const statusForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await fetch("/api/status_container", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ stack, status}),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setmsg(data.error);
+      return;
+    }
+    setmsg(data.message);
+    setrefresh(Date.now());
+    setTaskID(data.task_id);
+    setTimeout(() => {
+      setmsg("");
+      userData(null);
+    }, 200);
+  };
+
   const change_icon = (e: React.MouseEvent<HTMLElement>) => {
     setOpenicon(!open_icon);
   };
@@ -141,9 +206,10 @@ export default function UserTable() {
               <tr className="h-[70px] text-lg text-center text-white">
                 <th className="w-[10%]">No.</th>
                 <th className="w-[10%]">Protocol</th>
-                <th className="w-[20%]">Domain</th>
+                <th className="w-[15%]">Domain</th>
                 <th className="w-[10%]">Port</th>
-                <th className="w-[15%]">Publish</th>
+                <th className="w-[10%]">Publish</th>
+                <th className="w-[10%]">Status</th>
                 <th className="w-[25%]">Project Path</th>
                 <th className="w-[10%]">Edit</th>
               </tr>
@@ -165,6 +231,7 @@ export default function UserTable() {
                   <td className="max-w-[80px] truncate">
                     {container.publish ? "Yes" : "No"}
                   </td>
+                  <td className="max-w-[80px] truncate">{container.status == "running" ? "Running" : container.status == "pending" ? "Pending" : "Stopped"}</td>
                   <td className="max-w-[80px] truncate">
                     {container.project_path}
                   </td>
@@ -183,7 +250,7 @@ export default function UserTable() {
               {containerTable.length === 0 && (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={8}
                     className="h-[65px] border-b hover:bg-gray-100 transition-all group"
                   >
                     No results found
@@ -208,9 +275,7 @@ export default function UserTable() {
             </div>
             <div className="w-full px-5 gap-3 h-[10%] flex justify-start items-center text-xl font-[600]">
               <Rocket size={40} />
-              <span className="truncate max-w-[320px] text-lg">
-                {domain}
-              </span>
+              <span className="truncate max-w-[320px] text-lg">{domain}</span>
             </div>
             {!del && (
               <form
@@ -275,6 +340,20 @@ export default function UserTable() {
             <div className="flex justify-end items-center gap-4 w-full px-5 h-[15%] pb-4">
               {!del && (
                 <>
+                  <form
+                    method="post"
+                    id="statusForm"
+                    className="hidden"
+                    onSubmit={statusForm}
+                  ></form>
+
+                  <button
+                    type="submit"
+                    className={`p-2 flex justify-center items-center ${status === "running" ? "bg-yellow-500 hover:bg-yellow-700" : "bg-green-500 hover:bg-green-700"} text-white w-[80px] rounded-lg cursor-pointer transition duration-200`}
+                    form="statusForm"
+                  >
+                    {status === "running" ? "Stop" : "Start"}
+                  </button>
                   <button
                     type="submit"
                     className="p-2 flex justify-center items-center bg-blue-500 text-white w-[80px] rounded-lg cursor-pointer hover:bg-blue-700 transition duration-200"

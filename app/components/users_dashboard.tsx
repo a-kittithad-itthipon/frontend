@@ -1,11 +1,47 @@
 "use client";
 import { ArrowUpRight } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SetStateAction, useEffect, useState } from "react";
 
 export default function Get_users_systemlist() {
   const data_container: SetStateAction<any[]> = [];
 
+  const searchParams = useSearchParams();
+  const taskId = searchParams.get("task_id");
+  const [refresh, setRefresh] = useState(0)
+  const router = useRouter();
+
   const [container, setContainer] = useState<any[]>([]);
+
+
+  useEffect(() => {
+    if (!taskId) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/task", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ task_id: taskId }),
+        });
+        
+        const data = await res.json();
+        if (res.status === 200) {
+          setRefresh(Date.now()); 
+          router.replace("/users/dashboard");
+        } 
+        else if (res.status >= 400) {
+          router.replace("/users/dashboard");
+        }
+
+      } catch (error) {
+        console.error(error);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+
+  }, [taskId]);
 
   useEffect(() => {
     const fetchContainer = async () => {
@@ -23,7 +59,7 @@ export default function Get_users_systemlist() {
       }
     };
     fetchContainer();
-  }, []);
+  }, [refresh]);
 
   if (container.length === 0) {
     return (

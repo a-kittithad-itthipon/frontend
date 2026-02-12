@@ -8,7 +8,7 @@ export default function Forgot() {
   const [username, setusername] = useState("");
   const check_username = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    const allowed = "abcdefghijklmnopqrstuvwxyz0123456789";
+    const allowed = "abcdefghijklmnopqrstuvwxyz0123456789.@";
 
     if (value.includes(" ")) {
       setalert(false);
@@ -69,7 +69,7 @@ export default function Forgot() {
       onSubmit={forgot_username}
     >
       <div className="w-full flex flex-col gap-2">
-        <label className="text-lg">Username</label>
+        <label className="text-lg">Username or Email</label>
         <input
           type="text"
           className="border p-3 w-full rounded-2xl outline-none focus:border-gray-500 transition"

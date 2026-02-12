@@ -12,39 +12,66 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Dashboard =  () => {
+  const searchParams = useSearchParams();
+  const taskId = searchParams.get("task_id");
+  const [refresh, setRefresh] = useState(0)
+  const router = useRouter();
 
-const [data, setData] = useState({
+  const [data, setData] = useState({
   username: "Loading...",
   user_total: 0,
   upload_total: 0,
   req_total: 0,
   user_upload_total: 0,
+  max_containers: 0,
+  container_used: 0,
 });
+
+  useEffect(() => {
+    if (!taskId) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/task", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ task_id: taskId }),
+        });
+        
+        const data = await res.json();
+        if (res.status === 200) {
+          setRefresh(Date.now()); 
+          router.replace("/users/dashboard");
+        } 
+        else if (res.status >= 400) {
+          router.replace("/users/dashboard");
+        }
+
+      } catch (error) {
+        console.error(error);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+
+  }, [taskId]);
 
 useEffect(() => {
   const fetchData = async () => {
-    try {
-      const res = await fetch("/api/dashboard");
-      
-      if (!res.ok) {
-        console.error("fetch Error");
-      }
-
-      const data = await res.json();
-      setData(data);
-
-    } catch (error) {
-      console.error(error);
-    }
+    const res = await fetch("/api/dashboard", { cache: "no-store" });
+    const data = await res.json();
+    setData(data);
   };
 
   fetchData();
-}, []);
+}, [refresh]);
 
-const { username, user_upload_total } = data;
+const { username, user_upload_total, max_containers, container_used } = data;
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <User_sidebar />
@@ -58,7 +85,8 @@ const { username, user_upload_total } = data;
               </div>
               <div className="flex items-center justify-end gap-3 text-xl text-gray-800 font-[600]">
                 <IdCard size={35} />
-                <div className="max-w-[250px]">{username}</div>
+                <div className="max-w-[250px] truncate">{username}</div>
+                <div className="ml-5">({container_used}/{max_containers})</div>
               </div>
             </div>
             <div className="w-full h-[85%] flex justify-center items-start overflow-y-auto custom-scroll border rounded-3xl">
