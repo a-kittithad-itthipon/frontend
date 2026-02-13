@@ -1,6 +1,6 @@
 "use client";
 
-import { Rocket, TriangleAlert, UploadCloud } from "lucide-react";
+import { CircleCheck, Rocket, TriangleAlert, UploadCloud } from "lucide-react";
 import React, { useState } from "react";
 import {
   Select,
@@ -24,11 +24,11 @@ export default function Upload() {
   const [new_file, set_new_file] = useState(false);
   const [type, set_type] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const check_file = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.files?.[0];
-
+    
     if (!value) {
       return;
     }
@@ -161,7 +161,7 @@ export default function Upload() {
         setalertmsg(true);
         return;
       }
-      if (value == "addp.site"){
+      if (value == "addp.site") {
         setmsg("Domain Name : Domain name addp.site not allowed");
         return;
       }
@@ -221,7 +221,7 @@ export default function Upload() {
     set_new_file(false);
     setmsg(data.message);
     setalertmsg(false);
-    router.push(`/users/dashboard?task_id=${data.task_id}`);
+    setFile(null);
   };
   return (
     <main className="flex flex-12 h-full justify-center items-center">
@@ -242,12 +242,13 @@ export default function Upload() {
                 htmlFor="file_zip"
                 className="border block p-3 rounded-2xl w-full h-[60%] flex flex-col justify-center items-center hover:bg-gray-100 transition cursor-pointer"
               >
-                <UploadCloud size={48} className="mb-3 text-gray-400" />
+                {file ? ( <CircleCheck size={60} className="mb-3 text-green-400 transition duration-300" />) : (<UploadCloud size={60} className="mb-3 text-gray-400 transition duration-300"/>)}
+
                 <span className="text-lg font-medium">
-                  Click to upload .zip project
+                  {file ? "File Selected" : "Click to upload .zip project"}
                 </span>
                 <span className="text-sm text-gray-500 mt-1">
-                  Please Archive your project (.zip only)
+                  {file ? `File is ${(file.size / 1024 / 1024).toFixed(3)} MB` : "Please Archive your project (.zip only)"}
                 </span>
               </label>
               <input
@@ -438,7 +439,7 @@ export default function Upload() {
             <div className="bg-gray-800 w-[70%] h-[50px] text-white flex justify-center items-center rounded-full overflow-hidden">
               <button
                 onClick={() => {
-                  setIsOpen(false), setmsg(""), setalertmsg(false);
+                  (setIsOpen(false), setmsg(""), setalertmsg(false));
                 }}
                 className="w-full h-full cursor-pointer hover:bg-sky-600 transition duration-200"
               >

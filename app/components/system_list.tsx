@@ -39,10 +39,25 @@ export default function SystemList() {
 
         if (!res.ok) {
           setSystem(systems_data);
+          return;
         }
-        setSystem(data);
+        const sys = [];
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].domain != null && data[i].domain != "") {
+            sys.push({
+              id: data[i].id,
+              container_name: data[i].container_name,
+              domain: data[i].domain,
+              type: data[i].type,
+              owner: data[i].owner,
+              updated_at: data[i].updated_at,
+              status: data[i].status,
+            });
+          }
+        }
+        setSystem(sys);
         console.log(data);
-        console.log(system);
+        console.log(sys);
       } catch (error) {
         console.log(error);
         setSystem(systems_data);
@@ -56,7 +71,7 @@ export default function SystemList() {
         <span className="w-[32%] h-[50px] rounded-full border border-gray-300 text-right flex justify-between items-center gap-2 px-4 focus-within:border focus-within:border-gray-500 transition-all duration-300">
           <input
             type="text"
-            placeholder="Search name or domain..."
+            placeholder="Search container name or domain..."
             className="w-full h-full p-3 outline-none"
             onChange={search_system}
           />
@@ -79,7 +94,6 @@ export default function SystemList() {
             </thead>
             <tbody className="text-center">
               {filteredSystems.map((value, i) =>
-                value.domain ? (
                   <tr
                     key={i + 1}
                     className="h-[65px] border-b hover:bg-gray-100 transition-all group"
@@ -106,7 +120,9 @@ export default function SystemList() {
                     </td>
                     <td className="max-w-[180px] truncate">{value.type}</td>
                     <td className="max-w-[180px] truncate">{value.owner}</td>
-                    <td className="max-w-[200px] truncate">{value.updated_at}</td>
+                    <td className="max-w-[200px] truncate">
+                      {value.updated_at}
+                    </td>
                     <td>
                       <div className="relative group text-green-600 font-medium flex justify-center items-center h-[65px] w-full group">
                         <i
@@ -128,8 +144,7 @@ export default function SystemList() {
                       </div>
                     </td>
                   </tr>
-                ) : null,
-              )}
+                  )}
               {filteredSystems.length === 0 && (
                 <tr>
                   <td

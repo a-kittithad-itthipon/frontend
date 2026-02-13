@@ -2,16 +2,20 @@
 import { Cuboid, Rocket, ShieldUser, UserCog, Users, User, History } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function User_sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const isActive = (path: string) => {
       return pathname === path ? "border-sky-600 text-sky-600 hover:text-sky-600 hover:bg-sky-50 " : "hover:bg-gray-800 hover:text-white";
     }
 
   const logout = async () => {
-    await fetch("/api/logout", { method: "POST" });
+    await fetch("/api/logout", { method: "POST"});
     console.log("LOGOUT");
+    router.replace("/");
+    router.refresh();
   };
   return (
     <nav className="bg-white flex flex-3 h-full flex-col justify-start items-center border-r">
@@ -62,7 +66,7 @@ export default function User_sidebar() {
       </div>
       <div className="flex flex-col justify-start items-start h-[15%] w-[80%] gap-3">
         <span className="text-lg font-[400]">Logout</span>
-        <Link href="/" className="w-full h-[50px]">
+        <div className="w-full h-[50px]">
           <button
             type="submit"
             className="w-full h-[50px] rounded-2xl border justify-start items-center flex gap-3 pl-5 text-md hover:bg-gray-800 hover:text-white transition duration-200 cursor-pointer"
@@ -70,7 +74,7 @@ export default function User_sidebar() {
           >
             <i className="bx bx-log-out-circle text-xl"></i>Logout
           </button>
-        </Link>
+        </div>
       </div>
     </nav>
   );

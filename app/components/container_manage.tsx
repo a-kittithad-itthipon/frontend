@@ -311,7 +311,7 @@ export default function UserTable() {
                     className="w-full py-2 border px-3 outline-none rounded-lg"
                     value={port}
                     onChange={check_port}
-                    required
+                    // required
                     placeholder="Enter port app (1 - 65535)"
                   />
                 </div>
